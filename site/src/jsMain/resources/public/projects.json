@@ -1,0 +1,77 @@
+[
+  {
+    "id": "project-1",
+    "slug": "android-budget-tracker",
+    "title": "Android Budget Tracker",
+    "shortDescription": "A Kotlin Android app for daily expense tracking and monthly insights.",
+    "fullDescription": "Android Budget Tracker helps users track spending categories, set monthly caps, and review trends through simple dashboards.",
+    "techStack": ["Kotlin", "Jetpack Compose", "Room", "Koin"],
+    "features": [
+      "Offline-first expense logging",
+      "Category-based monthly budgets",
+      "CSV export for accounting"
+    ],
+    "thumbnailUrl": "/images/projects/project-1-thumb.svg",
+    "heroImageUrl": "/images/projects/project-1-thumb.svg",
+    "galleryImages": [
+      "/images/projects/project-1-thumb.svg",
+      "/images/projects/project-2-thumb.svg"
+    ],
+    "links": {
+      "github": "https://github.com/example/android-budget-tracker",
+      "playStore": "https://play.google.com/store/apps/details?id=com.example.budgettracker"
+    },
+    "date": "2026-01",
+    "order": 1
+  },
+  {
+    "id": "project-2",
+    "slug": "team-kanban-web",
+    "title": "Team Kanban Web",
+    "shortDescription": "A collaborative kanban board for sprint planning and task tracking.",
+    "fullDescription": "Team Kanban Web provides drag-and-drop task management, swimlanes, and role-based permissions for small product teams.",
+    "techStack": ["Kotlin", "Ktor", "PostgreSQL", "Docker"],
+    "features": [
+      "Real-time board updates",
+      "Sprint and backlog views",
+      "Role-based access controls"
+    ],
+    "thumbnailUrl": "/images/projects/project-2-thumb.svg",
+    "heroImageUrl": "/images/projects/project-2-thumb.svg",
+    "galleryImages": [
+      "/images/projects/project-2-thumb.svg",
+      "/images/projects/project-1-thumb.svg",
+      "/images/projects/project-3-thumb.svg"
+    ],
+    "links": {
+      "github": "https://github.com/example/team-kanban-web",
+      "liveDemo": "https://demo.example.com/team-kanban-web"
+    },
+    "date": "2026-02",
+    "order": 2
+  },
+  {
+    "id": "project-3",
+    "slug": "fitness-companion-ios",
+    "title": "Fitness Companion iOS",
+    "shortDescription": "An iOS training planner with workout templates and progress snapshots.",
+    "fullDescription": "Fitness Companion iOS lets users build workout routines, track performance over time, and sync plans across devices.",
+    "techStack": ["Kotlin Multiplatform", "SwiftUI", "Firebase"],
+    "features": [
+      "Custom workout templates",
+      "Session history analytics",
+      "Cloud sync for plans"
+    ],
+    "thumbnailUrl": "/images/projects/project-3-thumb.svg",
+    "heroImageUrl": "/images/projects/project-3-thumb.svg",
+    "galleryImages": [
+      "/images/projects/project-3-thumb.svg"
+    ],
+    "links": {
+      "github": "https://github.com/example/fitness-companion",
+      "appStore": "https://apps.apple.com/app/id1234567890"
+    },
+    "date": "2026-03",
+    "order": 3
+  }
+]
