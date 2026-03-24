@@ -31,6 +31,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
 import com.varabyte.kobweb.compose.ui.modifiers.overflow
+import com.varabyte.kobweb.compose.ui.modifiers.onClick
 import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.position
 import com.varabyte.kobweb.compose.ui.modifiers.size
@@ -74,6 +75,7 @@ import org.jetbrains.compose.web.css.vh
 import org.jetbrains.compose.web.css.keywords.auto
 import org.jetbrains.compose.web.dom.Button as HtmlButton
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Img
 import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Ul
 
@@ -130,32 +132,11 @@ val TechChipGlowFrameStyle = CssStyle.base {
 val GalleryRailViewportStyle = CssStyle.base {
     Modifier
         .fillMaxWidth()
-        .padding(leftRight = 0.2.cssRem, topBottom = 0.2.cssRem)
-}
-
-val GalleryRailFrameStyle = CssStyle.base {
-    Modifier
-        .width(7.3.cssRem)
-        .height(12.8.cssRem)
-        .padding(0.px)
-        .borderRadius(0.62.cssRem)
-        .overflow(com.varabyte.kobweb.compose.css.Overflow.Hidden)
-}
-
-val GalleryCardOutlineFrameStyle = CssStyle {
-    base {
-        Modifier
-            .borderRadius(0.7.cssRem)
-            .border(width = 1.px, color = colorMode.toSitePalette().brand.cyan.toRgb().copyf(alpha = 0.56f))
-    }
-    cssRule(":hover") {
-        Modifier
-            .border(width = 2.px, color = colorMode.toSitePalette().brand.cyan)
-    }
-}
-
-val GalleryCardOutlineFrameSelectedStyle = CssStyle.base {
-    Modifier.border(width = 2.px, color = colorMode.toSitePalette().brand.cyan)
+        .padding(
+            top = 0.75.cssRem,
+            bottom = 1.cssRem,
+            leftRight = 0.6.cssRem
+        )
 }
 
 val GalleryLightboxOverlayStyle = CssStyle.base {
@@ -205,15 +186,6 @@ val GalleryLightboxImageStageStyle = CssStyle.base {
         .backgroundColor(colorMode.toSitePalette().surface)
         .borderRadius(0.7.cssRem)
         .border(width = 1.px, color = colorMode.toSitePalette().border)
-        .overflow(com.varabyte.kobweb.compose.css.Overflow.Hidden)
-}
-
-val GalleryLightboxThumbnailButtonStyle = CssStyle.base {
-    Modifier
-        .width(3.2.cssRem)
-        .height(5.7.cssRem)
-        .padding(0.px)
-        .borderRadius(0.5.cssRem)
         .overflow(com.varabyte.kobweb.compose.css.Overflow.Hidden)
 }
 
@@ -280,6 +252,71 @@ private fun GalleryButton(
             SpanText(text)
         }
     }
+}
+
+private fun css(vararg rules: String): String {
+    return rules.joinToString("; ")
+}
+
+private fun encodeSvg(svg: String): String {
+    return svg
+        .replace("%", "%25")
+        .replace("#", "%23")
+        .replace("<", "%3C")
+        .replace(">", "%3E")
+        .replace("\"", "%22")
+        .replace(" ", "%20")
+}
+
+private fun svgStrokeData(stroke: String, strokeWidth: Double, opacity: Double, radiusPx: Int): String {
+    val svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 90' preserveAspectRatio='none'>" +
+        "<rect x='0.75' y='0.75' width='158.5' height='88.5' rx='$radiusPx' ry='$radiusPx' fill='none' " +
+        "stroke='$stroke' stroke-width='$strokeWidth' stroke-opacity='$opacity' shape-rendering='geometricPrecision'/>" +
+        "</svg>"
+    return "data:image/svg+xml;utf8,${encodeSvg(svg)}"
+}
+
+private fun overlayBackgroundA1E(hovered: Boolean, selected: Boolean, radiusPx: Int): String {
+    val idleStroke = svgStrokeData("rgba(120, 180, 245, 0.28)", 0.8, 1.0, radiusPx)
+    val activeInner = svgStrokeData(
+        if (selected) "rgba(160, 220, 255, 1)" else "rgba(150, 210, 255, 0.95)",
+        1.2,
+        1.0,
+        radiusPx
+    )
+    val activeOuter = svgStrokeData("rgba(120, 190, 255, 0.55)", 2.0, 0.4, radiusPx)
+    return if (hovered || selected) {
+        "background-image: url(\"$activeInner\"), url(\"$activeOuter\")"
+    } else {
+        "background-image: url(\"$idleStroke\")"
+    }
+}
+
+private fun a1eWrapperGlow(hovered: Boolean, selected: Boolean): String {
+    return when {
+        hovered -> "drop-shadow(0 0 12px rgba(90, 170, 255, 0.24))"
+        selected -> "drop-shadow(0 0 10px rgba(90, 170, 255, 0.22))"
+        else -> "none"
+    }
+}
+
+private fun baseThumbCss(width: String, height: String, radius: String): String {
+    return css(
+        "width: $width",
+        "min-width: $width",
+        "height: $height",
+        "border-radius: $radius",
+        "overflow: hidden",
+        "background: #121b2f",
+        "box-sizing: border-box",
+        "flex: 0 0 auto",
+        "cursor: pointer",
+        "transition: all 180ms ease",
+        "position: relative",
+        "border: 0",
+        "padding: 0",
+        "display: inline-block",
+    )
 }
 
 @Composable
@@ -387,6 +424,8 @@ fun ProjectSlugPage() {
     var galleryRailStart by remember { mutableStateOf(0) }
     var lightboxRailStart by remember { mutableStateOf(0) }
     var isGalleryLightboxOpen by remember { mutableStateOf(false) }
+    var galleryHoveredIndex by remember { mutableStateOf<Int?>(null) }
+    var lightboxHoveredIndex by remember { mutableStateOf<Int?>(null) }
 
     LaunchedEffect(slug) {
         if (slug == null) {
@@ -398,6 +437,8 @@ fun ProjectSlugPage() {
             galleryRailStart = 0
             lightboxRailStart = 0
             isGalleryLightboxOpen = false
+            galleryHoveredIndex = null
+            lightboxHoveredIndex = null
             return@LaunchedEffect
         }
 
@@ -419,6 +460,8 @@ fun ProjectSlugPage() {
         galleryRailStart = 0
         lightboxRailStart = 0
         isGalleryLightboxOpen = false
+        galleryHoveredIndex = null
+        lightboxHoveredIndex = null
     }
 
     val palette = ColorMode.current.toSitePalette()
@@ -528,26 +571,71 @@ fun ProjectSlugPage() {
                                     .take(railVisibleCount)
                                     .forEachIndexed { offset, imageUrl ->
                                         val imageIndex = safeRailStart + offset
+                                        val isHovered = galleryHoveredIndex == imageIndex
+                                        val isSelected = false
                                         Div(
-                                            GalleryCardOutlineFrameStyle.toAttrs()
-                                        ) {
-                                            GalleryButton(
-                                                ariaLabel = "Open screenshot ${imageIndex + 1}",
-                                                onClick = {
-                                                    galleryIndex = imageIndex
-                                                    isGalleryLightboxOpen = true
-                                                },
-                                                modifier = GalleryControlButtonStyle.toModifier()
-                                                    .then(GalleryRailFrameStyle.toModifier()),
-                                            ) {
-                                                Image(
-                                                    src = imageUrl,
-                                                    description = "${current.title} gallery preview ${imageIndex + 1}",
-                                                    modifier = Modifier
-                                                        .fillMaxSize()
-                                                        .objectFit(ObjectFit.Cover)
-                                                        .display(DisplayStyle.Block)
+                                            attrs = {
+                                                attr(
+                                                    "style",
+                                                    css(
+                                                        "display: inline-block",
+                                                        "border-radius: 0.62rem",
+                                                        "filter: ${a1eWrapperGlow(isHovered, isSelected)}",
+                                                        "transition: filter 180ms ease, transform 180ms ease",
+                                                        if (isHovered) "transform: translateY(-2px)" else "transform: translateY(0px)",
+                                                    )
                                                 )
+                                                onMouseEnter { galleryHoveredIndex = imageIndex }
+                                                onMouseLeave {
+                                                    if (galleryHoveredIndex == imageIndex) {
+                                                        galleryHoveredIndex = null
+                                                    }
+                                                }
+                                            }
+                                        ) {
+                                            HtmlButton(
+                                                attrs = {
+                                                    attr("type", "button")
+                                                    attr("aria-label", "Open screenshot ${imageIndex + 1}")
+                                                    attr("style", baseThumbCss("7.3rem", "12.8rem", "0.62rem"))
+                                                    onClick {
+                                                        galleryIndex = imageIndex
+                                                        isGalleryLightboxOpen = true
+                                                    }
+                                                }
+                                            ) {
+                                                Img(
+                                                    src = imageUrl,
+                                                    alt = "${current.title} gallery preview ${imageIndex + 1}",
+                                                    attrs = {
+                                                        attr(
+                                                            "style",
+                                                            css(
+                                                                "width: 100%",
+                                                                "height: 100%",
+                                                                "display: block",
+                                                                "object-fit: cover",
+                                                            )
+                                                        )
+                                                    }
+                                                )
+                                                Div(
+                                                    attrs = {
+                                                        attr(
+                                                            "style",
+                                                            css(
+                                                                "position: absolute",
+                                                                "inset: 0",
+                                                                "width: 100%",
+                                                                "height: 100%",
+                                                                "pointer-events: none",
+                                                                "background-size: 100% 100%",
+                                                                "background-repeat: no-repeat",
+                                                                overlayBackgroundA1E(isHovered, isSelected, 10),
+                                                            )
+                                                        )
+                                                    }
+                                                ) {}
                                             }
                                         }
                                     }
@@ -593,8 +681,17 @@ fun ProjectSlugPage() {
                             val safeLightboxRailStart = lightboxRailStart.coerceIn(0, maxLightboxRailStart)
                             if (safeLightboxRailStart != lightboxRailStart) lightboxRailStart = safeLightboxRailStart
 
-                            Box(GalleryLightboxOverlayStyle.toModifier(), contentAlignment = Alignment.Center) {
-                                Column(GalleryLightboxPanelStyle.toModifier().gap(0.85.cssRem)) {
+                            Box(
+                                GalleryLightboxOverlayStyle.toModifier().onClick { isGalleryLightboxOpen = false },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Div(
+                                    attrs = {
+                                        onClick { it.stopPropagation() }
+                                        attr("style", "display: inline-block")
+                                    }
+                                ) {
+                                    Column(GalleryLightboxPanelStyle.toModifier().gap(0.85.cssRem)) {
                                     Row(
                                         Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.End
@@ -664,7 +761,10 @@ fun ProjectSlugPage() {
                                             Modifier
                                                 .fillMaxWidth()
                                                 .gap(0.45.cssRem)
-                                                .padding(leftRight = if (maxLightboxRailStart > 0) 2.9.cssRem else 0.cssRem)
+                                                .padding(
+                                                    leftRight = if (maxLightboxRailStart > 0) 2.9.cssRem else 0.cssRem,
+                                                    topBottom = 0.6.cssRem
+                                                )
                                         ) {
                                             current.galleryImages
                                                 .drop(safeLightboxRailStart)
@@ -672,36 +772,78 @@ fun ProjectSlugPage() {
                                                 .forEachIndexed { offset, imageUrl ->
                                                     val imageIndex = safeLightboxRailStart + offset
                                                     val isSelected = imageIndex == safeGalleryIndex
+                                                    val isHovered = lightboxHoveredIndex == imageIndex
                                                     Div(
-                                                        GalleryCardOutlineFrameStyle.toModifier()
-                                                            .then(if (isSelected) GalleryCardOutlineFrameSelectedStyle.toModifier() else Modifier)
-                                                            .toAttrs()
-                                                    ) {
-                                                        GalleryButton(
-                                                            ariaLabel = "Select screenshot ${imageIndex + 1}",
-                                                            onClick = { galleryIndex = imageIndex },
-                                                            modifier = GalleryControlButtonStyle.toModifier()
-                                                                .then(GalleryLightboxThumbnailButtonStyle.toModifier())
-                                                        ) {
-                                                            Image(
-                                                                src = imageUrl,
-                                                                description = "${current.title} screenshot thumbnail ${imageIndex + 1}",
-                                                                modifier = Modifier
-                                                                    .fillMaxSize()
-                                                                    .objectFit(ObjectFit.Cover)
-                                                                    .display(DisplayStyle.Block)
+                                                        attrs = {
+                                                            attr(
+                                                                "style",
+                                                                css(
+                                                                    "display: inline-block",
+                                                                    "border-radius: 0.5rem",
+                                                                    "filter: ${a1eWrapperGlow(isHovered, isSelected)}",
+                                                                    "transition: filter 180ms ease, transform 180ms ease",
+                                                                    if (isHovered) "transform: translateY(-2px)" else "transform: translateY(0px)",
+                                                                )
                                                             )
+                                                            onMouseEnter { lightboxHoveredIndex = imageIndex }
+                                                            onMouseLeave {
+                                                                if (lightboxHoveredIndex == imageIndex) {
+                                                                    lightboxHoveredIndex = null
+                                                                }
+                                                            }
+                                                        }
+                                                    ) {
+                                                        HtmlButton(
+                                                            attrs = {
+                                                                attr("type", "button")
+                                                                attr("aria-label", "Select screenshot ${imageIndex + 1}")
+                                                                attr("style", baseThumbCss("3.2rem", "5.7rem", "0.5rem"))
+                                                                onClick { galleryIndex = imageIndex }
+                                                            }
+                                                        ) {
+                                                            Img(
+                                                                src = imageUrl,
+                                                                alt = "${current.title} screenshot thumbnail ${imageIndex + 1}",
+                                                                attrs = {
+                                                                    attr(
+                                                                        "style",
+                                                                        css(
+                                                                            "width: 100%",
+                                                                            "height: 100%",
+                                                                            "display: block",
+                                                                            "object-fit: cover",
+                                                                        )
+                                                                    )
+                                                                }
+                                                            )
+                                                            Div(
+                                                                attrs = {
+                                                                    attr(
+                                                                        "style",
+                                                                        css(
+                                                                            "position: absolute",
+                                                                            "inset: 0",
+                                                                            "width: 100%",
+                                                                            "height: 100%",
+                                                                            "pointer-events: none",
+                                                                            "background-size: 100% 100%",
+                                                                            "background-repeat: no-repeat",
+                                                                            overlayBackgroundA1E(isHovered, isSelected, 8),
+                                                                        )
+                                                                    )
+                                                                }
+                                                            ) {}
                                                         }
                                                     }
                                                 }
                                         }
 
-                                        if (maxLightboxRailStart > 0) {
-                                            Row(
-                                                Modifier
-                                                    .fillMaxWidth()
-                                                    .position(Position.Absolute)
-                                                    .top(0.px)
+                                            if (maxLightboxRailStart > 0) {
+                                                Row(
+                                                    Modifier
+                                                        .fillMaxWidth()
+                                                        .position(Position.Absolute)
+                                                        .top(0.px)
                                                     .bottom(0.px),
                                                 horizontalArrangement = Arrangement.SpaceBetween,
                                                 verticalAlignment = Alignment.CenterVertically
@@ -731,6 +873,7 @@ fun ProjectSlugPage() {
                                             }
                                         }
                                     }
+                                }
                                 }
                             }
                         }
