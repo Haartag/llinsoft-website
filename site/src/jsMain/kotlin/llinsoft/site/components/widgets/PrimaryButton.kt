@@ -4,16 +4,20 @@ import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.graphics.Image
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import llinsoft.site.toSitePalette
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
 /**
- * Design tokens for icon buttons
+ * Design tokens for primary buttons
  */
-private object IconButtonTokens {
-    const val radiusPx = 50 // Full circle
+private object PrimaryButtonTokens {
+    const val radiusPx = 10
+    const val defaultWidth = 220
+    const val defaultHeight = 54
 
     // Button colors
     const val idleStroke = "rgba(120, 180, 245, 0.35)"
@@ -34,9 +38,9 @@ private object IconButtonTokens {
 }
 
 /**
- * SVG generator for icon button borders
+ * SVG generator for primary button borders
  */
-private object IconButtonSvgGenerator {
+private object PrimaryButtonSvgGenerator {
     private val cache = mutableMapOf<String, String>()
 
     private fun encodeSvg(svg: String): String {
@@ -67,8 +71,8 @@ private object IconButtonSvgGenerator {
         return when (state) {
             "idle" -> {
                 val idle = svgStroke(
-                    IconButtonTokens.idleStroke,
-                    IconButtonTokens.idleStrokeWidth,
+                    PrimaryButtonTokens.idleStroke,
+                    PrimaryButtonTokens.idleStrokeWidth,
                     1.0,
                     width,
                     height,
@@ -78,16 +82,16 @@ private object IconButtonSvgGenerator {
             }
             "hover" -> {
                 val inner = svgStroke(
-                    IconButtonTokens.hoverInner,
-                    IconButtonTokens.hoverInnerStrokeWidth,
+                    PrimaryButtonTokens.hoverInner,
+                    PrimaryButtonTokens.hoverInnerStrokeWidth,
                     1.0,
                     width,
                     height,
                     radiusPx
                 )
                 val outer = svgStroke(
-                    IconButtonTokens.hoverOuter,
-                    IconButtonTokens.hoverOuterStrokeWidth,
+                    PrimaryButtonTokens.hoverOuter,
+                    PrimaryButtonTokens.hoverOuterStrokeWidth,
                     1.0,
                     width,
                     height,
@@ -97,16 +101,16 @@ private object IconButtonSvgGenerator {
             }
             "active" -> {
                 val inner = svgStroke(
-                    IconButtonTokens.activeInner,
-                    IconButtonTokens.activeInnerStrokeWidth,
+                    PrimaryButtonTokens.activeInner,
+                    PrimaryButtonTokens.activeInnerStrokeWidth,
                     1.0,
                     width,
                     height,
                     radiusPx
                 )
                 val outer = svgStroke(
-                    IconButtonTokens.activeOuter,
-                    IconButtonTokens.activeOuterStrokeWidth,
+                    PrimaryButtonTokens.activeOuter,
+                    PrimaryButtonTokens.activeOuterStrokeWidth,
                     1.0,
                     width,
                     height,
@@ -120,26 +124,30 @@ private object IconButtonSvgGenerator {
 }
 
 /**
- * Icon Button - Small circular button for icons (close, arrows, navigation controls)
+ * Primary Button - Large primary action button with optional icon
  *
  * Features:
  * - SVG-based dynamic borders with hover/active states
  * - Drop-shadow glow effect (500ms transition for Safari compatibility)
- * - Default size: 50x50px, customizable
+ * - TranslateY animation on hover
+ * - Optional icon support (left or right position)
+ * - Default size: 220x54px, customizable
  *
- * @param ariaLabel Accessibility label for the button
+ * @param text Button text
  * @param onClick Click handler
- * @param width Button width in pixels (default: 50)
- * @param height Button height in pixels (default: 50)
- * @param content Button content (typically an icon or single character)
+ * @param width Button width in pixels (default: 220)
+ * @param height Button height in pixels (default: 54)
+ * @param iconSrc Optional icon image path
+ * @param iconFirst If true, icon appears before text; if false, after text
  */
 @Composable
-fun IconButton(
-    ariaLabel: String,
+fun PrimaryButton(
+    text: String,
     onClick: () -> Unit,
-    width: Int = 50,
-    height: Int = 50,
-    content: @Composable () -> Unit
+    width: Int = PrimaryButtonTokens.defaultWidth,
+    height: Int = PrimaryButtonTokens.defaultHeight,
+    iconSrc: String? = null,
+    iconFirst: Boolean = true
 ) {
     val palette = ColorMode.current.toSitePalette()
     var hovered by remember { mutableStateOf(false) }
@@ -152,12 +160,12 @@ fun IconButton(
     }
 
     val glowFilter = when {
-        pressed -> "drop-shadow(0 0 18px rgba(90, 170, 255, 0.7))"
-        hovered -> "drop-shadow(0 0 14px rgba(90, 170, 255, 0.5))"
+        pressed -> "drop-shadow(0 0 20px rgba(90, 170, 255, 0.75))"
+        hovered -> "drop-shadow(0 0 16px rgba(90, 170, 255, 0.55))"
         else -> "none"
     }
 
-    val overlayBg = IconButtonSvgGenerator.buttonOverlay(state, width, height, IconButtonTokens.radiusPx)
+    val overlayBg = PrimaryButtonSvgGenerator.buttonOverlay(state, width, height, PrimaryButtonTokens.radiusPx)
 
     Div(
         attrs = Modifier
@@ -169,35 +177,46 @@ fun IconButton(
             }
             .toAttrs {
                 style {
-                    property("border-radius", "${IconButtonTokens.radiusPx}%")
+                    property("border-radius", "${PrimaryButtonTokens.radiusPx}px")
                     property("filter", glowFilter)
-                    property("transition", "filter 500ms ease")
+                    property("transform", if (hovered) "translateY(-2px)" else "translateY(0px)")
+                    property("transition", "filter 500ms ease, transform ${PrimaryButtonTokens.transitionMs}ms ease")
                 }
             }
     ) {
         org.jetbrains.compose.web.dom.Button(
             attrs = Modifier
-                .size(width.px, height.px)
-                .padding(0.px)
+                .width(width.px)
+                .height(height.px)
+                .padding(leftRight = 1.2.cssRem, topBottom = 0.8.cssRem)
                 .backgroundColor(palette.elevatedSurface)
-                .borderRadius(IconButtonTokens.radiusPx.percent)
+                .borderRadius(PrimaryButtonTokens.radiusPx.px)
                 .border(width = 0.px, color = palette.surface)
                 .position(Position.Relative)
                 .toAttrs {
                     attr("type", "button")
-                    attr("aria-label", ariaLabel)
                     style {
                         property("cursor", "pointer")
                         property("display", "flex")
                         property("align-items", "center")
                         property("justify-content", "center")
+                        property("gap", "0.7rem")
+                        property("font-size", "1rem")
+                        property("font-weight", "500")
+                        property("color", "${palette.textPrimary}")
                     }
                     onClick { onClick() }
                     onMouseDown { pressed = true }
                     onMouseUp { pressed = false }
                 }
         ) {
-            content()
+            if (iconSrc != null && iconFirst) {
+                Image(iconSrc, "", Modifier.size(1.1.cssRem).display(DisplayStyle.Block))
+            }
+            SpanText(text)
+            if (iconSrc != null && !iconFirst) {
+                Image(iconSrc, "", Modifier.size(1.1.cssRem).display(DisplayStyle.Block))
+            }
 
             // SVG overlay
             Div(attrs = {
@@ -206,7 +225,7 @@ fun IconButton(
                     property("inset", "0")
                     width(100.percent)
                     height(100.percent)
-                    property("border-radius", "${IconButtonTokens.radiusPx}%")
+                    property("border-radius", "${PrimaryButtonTokens.radiusPx}px")
                     property("pointer-events", "none")
                     property("background-size", "100% 100%")
                     property("background-repeat", "no-repeat")

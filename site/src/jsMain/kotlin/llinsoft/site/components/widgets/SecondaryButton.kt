@@ -4,16 +4,19 @@ import androidx.compose.runtime.*
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
+import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import llinsoft.site.toSitePalette
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
 /**
- * Design tokens for icon buttons
+ * Design tokens for secondary buttons
  */
-private object IconButtonTokens {
-    const val radiusPx = 50 // Full circle
+private object SecondaryButtonTokens {
+    const val radiusPx = 8
+    const val defaultWidth = 160
+    const val defaultHeight = 42
 
     // Button colors
     const val idleStroke = "rgba(120, 180, 245, 0.35)"
@@ -34,9 +37,9 @@ private object IconButtonTokens {
 }
 
 /**
- * SVG generator for icon button borders
+ * SVG generator for secondary button borders
  */
-private object IconButtonSvgGenerator {
+private object SecondaryButtonSvgGenerator {
     private val cache = mutableMapOf<String, String>()
 
     private fun encodeSvg(svg: String): String {
@@ -67,8 +70,8 @@ private object IconButtonSvgGenerator {
         return when (state) {
             "idle" -> {
                 val idle = svgStroke(
-                    IconButtonTokens.idleStroke,
-                    IconButtonTokens.idleStrokeWidth,
+                    SecondaryButtonTokens.idleStroke,
+                    SecondaryButtonTokens.idleStrokeWidth,
                     1.0,
                     width,
                     height,
@@ -78,16 +81,16 @@ private object IconButtonSvgGenerator {
             }
             "hover" -> {
                 val inner = svgStroke(
-                    IconButtonTokens.hoverInner,
-                    IconButtonTokens.hoverInnerStrokeWidth,
+                    SecondaryButtonTokens.hoverInner,
+                    SecondaryButtonTokens.hoverInnerStrokeWidth,
                     1.0,
                     width,
                     height,
                     radiusPx
                 )
                 val outer = svgStroke(
-                    IconButtonTokens.hoverOuter,
-                    IconButtonTokens.hoverOuterStrokeWidth,
+                    SecondaryButtonTokens.hoverOuter,
+                    SecondaryButtonTokens.hoverOuterStrokeWidth,
                     1.0,
                     width,
                     height,
@@ -97,16 +100,16 @@ private object IconButtonSvgGenerator {
             }
             "active" -> {
                 val inner = svgStroke(
-                    IconButtonTokens.activeInner,
-                    IconButtonTokens.activeInnerStrokeWidth,
+                    SecondaryButtonTokens.activeInner,
+                    SecondaryButtonTokens.activeInnerStrokeWidth,
                     1.0,
                     width,
                     height,
                     radiusPx
                 )
                 val outer = svgStroke(
-                    IconButtonTokens.activeOuter,
-                    IconButtonTokens.activeOuterStrokeWidth,
+                    SecondaryButtonTokens.activeOuter,
+                    SecondaryButtonTokens.activeOuterStrokeWidth,
                     1.0,
                     width,
                     height,
@@ -120,26 +123,25 @@ private object IconButtonSvgGenerator {
 }
 
 /**
- * Icon Button - Small circular button for icons (close, arrows, navigation controls)
+ * Secondary Button - Medium secondary action button
  *
  * Features:
  * - SVG-based dynamic borders with hover/active states
  * - Drop-shadow glow effect (500ms transition for Safari compatibility)
- * - Default size: 50x50px, customizable
+ * - TranslateY animation on hover
+ * - Default size: 160x42px, customizable
  *
- * @param ariaLabel Accessibility label for the button
+ * @param text Button text
  * @param onClick Click handler
- * @param width Button width in pixels (default: 50)
- * @param height Button height in pixels (default: 50)
- * @param content Button content (typically an icon or single character)
+ * @param width Button width in pixels (default: 160)
+ * @param height Button height in pixels (default: 42)
  */
 @Composable
-fun IconButton(
-    ariaLabel: String,
+fun SecondaryButton(
+    text: String,
     onClick: () -> Unit,
-    width: Int = 50,
-    height: Int = 50,
-    content: @Composable () -> Unit
+    width: Int = SecondaryButtonTokens.defaultWidth,
+    height: Int = SecondaryButtonTokens.defaultHeight
 ) {
     val palette = ColorMode.current.toSitePalette()
     var hovered by remember { mutableStateOf(false) }
@@ -157,7 +159,7 @@ fun IconButton(
         else -> "none"
     }
 
-    val overlayBg = IconButtonSvgGenerator.buttonOverlay(state, width, height, IconButtonTokens.radiusPx)
+    val overlayBg = SecondaryButtonSvgGenerator.buttonOverlay(state, width, height, SecondaryButtonTokens.radiusPx)
 
     Div(
         attrs = Modifier
@@ -169,35 +171,39 @@ fun IconButton(
             }
             .toAttrs {
                 style {
-                    property("border-radius", "${IconButtonTokens.radiusPx}%")
+                    property("border-radius", "${SecondaryButtonTokens.radiusPx}px")
                     property("filter", glowFilter)
-                    property("transition", "filter 500ms ease")
+                    property("transform", if (hovered) "translateY(-1px)" else "translateY(0px)")
+                    property("transition", "filter 500ms ease, transform ${SecondaryButtonTokens.transitionMs}ms ease")
                 }
             }
     ) {
         org.jetbrains.compose.web.dom.Button(
             attrs = Modifier
-                .size(width.px, height.px)
-                .padding(0.px)
+                .width(width.px)
+                .height(height.px)
+                .padding(leftRight = 0.9.cssRem, topBottom = 0.6.cssRem)
                 .backgroundColor(palette.elevatedSurface)
-                .borderRadius(IconButtonTokens.radiusPx.percent)
+                .borderRadius(SecondaryButtonTokens.radiusPx.px)
                 .border(width = 0.px, color = palette.surface)
                 .position(Position.Relative)
                 .toAttrs {
                     attr("type", "button")
-                    attr("aria-label", ariaLabel)
                     style {
                         property("cursor", "pointer")
                         property("display", "flex")
                         property("align-items", "center")
                         property("justify-content", "center")
+                        property("font-size", "0.9rem")
+                        property("font-weight", "500")
+                        property("color", "${palette.textPrimary}")
                     }
                     onClick { onClick() }
                     onMouseDown { pressed = true }
                     onMouseUp { pressed = false }
                 }
         ) {
-            content()
+            SpanText(text)
 
             // SVG overlay
             Div(attrs = {
@@ -206,7 +212,7 @@ fun IconButton(
                     property("inset", "0")
                     width(100.percent)
                     height(100.percent)
-                    property("border-radius", "${IconButtonTokens.radiusPx}%")
+                    property("border-radius", "${SecondaryButtonTokens.radiusPx}px")
                     property("pointer-events", "none")
                     property("background-size", "100% 100%")
                     property("background-repeat", "no-repeat")
