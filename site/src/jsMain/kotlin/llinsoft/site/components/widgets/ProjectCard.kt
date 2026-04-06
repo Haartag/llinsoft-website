@@ -18,10 +18,9 @@ import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.toAttrs
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import kotlinx.coroutines.delay
-import llinsoft.site.MonoTagTextStyle
 import llinsoft.site.models.Project
 import llinsoft.site.toSitePalette
+import llinsoft.site.components.utils.SvgGenerator
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
@@ -43,47 +42,39 @@ private object ProjectCardTokens {
 }
 
 /**
- * SVG generator for project cards
+ * Generates overlay background based on hover state
  */
-private object ProjectCardSvgGenerator {
-    private val cache = mutableMapOf<String, String>()
-
-    private fun encodeSvg(svg: String): String {
-        return svg
-            .replace("%", "%25")
-            .replace("#", "%23")
-            .replace("<", "%3C")
-            .replace(">", "%3E")
-            .replace("\"", "%22")
-            .replace("'", "%27")
-            .replace(" ", "%20")
+private fun overlayBackground(hovered: Boolean, width: Int, height: Int): String {
+    if (!hovered) {
+        val idle = SvgGenerator.svgStroke(
+            ProjectCardTokens.outlineIdle,
+            ProjectCardTokens.idleStrokeWidth,
+            1.0,
+            width,
+            height,
+            ProjectCardTokens.borderRadiusPx
+        )
+        return "url(\"$idle\")"
     }
 
-    fun svgStroke(stroke: String, strokeWidth: Double, opacity: Double, width: Int, height: Int): String {
-        val key = "$stroke|$strokeWidth|$opacity|$width|$height"
-        return cache.getOrPut(key) {
-            val inset = 0.75
-            val rectW = width - (inset * 2)
-            val rectH = height - (inset * 2)
-            val radius = 14.0
+    val inner = SvgGenerator.svgStroke(
+        ProjectCardTokens.outlineActiveInner,
+        ProjectCardTokens.activeInnerStrokeWidth,
+        1.0,
+        width,
+        height,
+        ProjectCardTokens.borderRadiusPx
+    )
+    val outer = SvgGenerator.svgStroke(
+        ProjectCardTokens.outlineActiveOuter,
+        ProjectCardTokens.activeOuterStrokeWidth,
+        ProjectCardTokens.activeOuterOpacity,
+        width,
+        height,
+        ProjectCardTokens.borderRadiusPx
+    )
 
-            val svg = """<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 $width $height' preserveAspectRatio='none'><rect x='$inset' y='$inset' width='$rectW' height='$rectH' rx='$radius' ry='$radius' fill='none' stroke='$stroke' stroke-width='$strokeWidth' stroke-opacity='$opacity' shape-rendering='geometricPrecision'/></svg>""".replace("\n", "")
-
-            "data:image/svg+xml;utf8,${encodeSvg(svg)}"
-        }
-    }
-
-    fun overlayBackground(hovered: Boolean, width: Int, height: Int): String {
-        if (!hovered) {
-            val idle = svgStroke(ProjectCardTokens.outlineIdle, ProjectCardTokens.idleStrokeWidth, 1.0, width, height)
-            return "url(\"$idle\")"
-        }
-
-        val inner = svgStroke(ProjectCardTokens.outlineActiveInner, ProjectCardTokens.activeInnerStrokeWidth, 1.0, width, height)
-        val outer = svgStroke(ProjectCardTokens.outlineActiveOuter, ProjectCardTokens.activeOuterStrokeWidth, ProjectCardTokens.activeOuterOpacity, width, height)
-
-        return "url(\"$inner\"), url(\"$outer\")"
-    }
+    return "url(\"$inner\"), url(\"$outer\")"
 }
 
 /**
@@ -103,7 +94,10 @@ val ProjectTitleStyle = CssStyle.base {
 }
 
 val ProjectDescStyle = CssStyle.base {
-    Modifier.fontSize(0.95.cssRem).opacity(0.85)
+    Modifier
+        .fontSize(0.95.cssRem)
+        .opacity(0.85)
+        .lineHeight(1.5)
 }
 
 val ProjectTagStyle = CssStyle.base {
@@ -125,46 +119,37 @@ val ProjectTagStyle = CssStyle.base {
  * - Includes thumbnail, title, description, tech tags, date
  *
  * @param project Project data model
- * @param estimatedWidth Estimated card width in pixels for SVG optimization (default: 650)
+ * @param estimatedWidth Estimated card width in pixels for SVG optimization (default: 550)
  * @param estimatedHeight Estimated card height in pixels for SVG optimization (default: 400)
  */
 @Composable
 fun ProjectCard(
     project: Project,
-    estimatedWidth: Int = 650,
+    estimatedWidth: Int = 550,
     estimatedHeight: Int = 400
 ) {
     val palette = ColorMode.current.toSitePalette()
-    var hovered by remember { mutableStateOf(false) }
-    var glowBrightness by remember { mutableStateOf(0f) }
+    var hovered by remember(project.slug) { mutableStateOf(false) }
 
-    LaunchedEffect(hovered) {
-        if (hovered) {
-            glowBrightness = 1.0f  // 100% bright
-            delay(500)
-            glowBrightness = 0.6f  // Fade to 60%
-        } else {
-            glowBrightness = 0f
-        }
-    }
-
-    val glowAlpha = when {
-        glowBrightness >= 1.0f -> 0.38
-        glowBrightness >= 0.6f -> 0.23
-        else -> 0.0
-    }
-
-    val glowFilter = if (glowAlpha > 0) {
-        "drop-shadow(0 0 14px rgba(90, 170, 255, $glowAlpha))"
+    val glowFilter = if (hovered) {
+        "drop-shadow(0 0 14px rgba(90, 170, 255, 0.5))"
     } else {
         "none"
     }
 
-    val overlayBackground = ProjectCardSvgGenerator.overlayBackground(hovered, estimatedWidth, estimatedHeight)
+    val overlayBackground = remember(hovered, estimatedWidth, estimatedHeight) {
+        overlayBackground(hovered, estimatedWidth, estimatedHeight)
+    }
 
-    Column(Modifier.fillMaxWidth()) {
+    Column(
+        Modifier
+            .width(550.px)
+            .height(400.px)
+    ) {
         Div(
             attrs = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
                 .display(DisplayStyle.Block)
                 .onMouseEnter { hovered = true }
                 .onMouseLeave { hovered = false }
@@ -174,6 +159,7 @@ fun ProjectCard(
                         property("filter", glowFilter)
                         property("transform", if (hovered) "translateY(-2px)" else "translateY(0px)")
                         property("transition", "filter 500ms ease-out, transform ${ProjectCardTokens.transitionMs}ms ease")
+                        property("max-width", "100%")
                     }
                 }
         ) {
@@ -191,18 +177,26 @@ fun ProjectCard(
 
                     Column(Modifier.padding(1.cssRem).gap(0.7.cssRem)) {
                         Div(ProjectTitleStyle.toAttrs()) { SpanText(project.title) }
-                        Div(ProjectDescStyle.toAttrs()) { SpanText(project.shortDescription) }
-
-                        Row(Modifier.fillMaxWidth().gap(0.45.cssRem).margin(top = 0.2.cssRem)) {
-                            project.techStack.take(3).forEach { tech ->
-                                Div(ProjectTagStyle.toModifier().then(MonoTagTextStyle.toModifier()).toAttrs()) {
-                                    SpanText(tech)
+                        Div(
+                            ProjectDescStyle.toModifier().toAttrs {
+                                style {
+                                    property("display", "-webkit-box")
+                                    property("-webkit-line-clamp", "2")
+                                    property("-webkit-box-orient", "vertical")
+                                    property("overflow", "hidden")
+                                    property("word-break", "break-word")
+                                    property("overflow-wrap", "break-word")
+                                    property("white-space", "normal")
+                                    property("min-width", "0")
+                                    property("height", "2.85rem")
                                 }
                             }
-                        }
+                        ) { SpanText(project.shortDescription) }
 
-                        Div(Modifier.margin(top = 0.25.cssRem).fontSize(0.79.cssRem).color(palette.textMuted).toAttrs()) {
-                            SpanText(project.date)
+                        Row(Modifier.fillMaxWidth().gap(0.45.cssRem).margin(top = 0.2.cssRem, bottom = 1.cssRem)) {
+                            project.featuredTech.forEach { tech ->
+                                TechTag(tech)
+                            }
                         }
                     }
 
@@ -246,32 +240,17 @@ fun SmallProjectCard(
     estimatedHeight: Int = 420
 ) {
     val palette = ColorMode.current.toSitePalette()
-    var hovered by remember { mutableStateOf(false) }
-    var glowBrightness by remember { mutableStateOf(0f) }
+    var hovered by remember(project.slug, index) { mutableStateOf(false) }
 
-    LaunchedEffect(hovered) {
-        if (hovered) {
-            glowBrightness = 1.0f
-            delay(500)
-            glowBrightness = 0.6f
-        } else {
-            glowBrightness = 0f
-        }
-    }
-
-    val glowAlpha = when {
-        glowBrightness >= 1.0f -> 0.38
-        glowBrightness >= 0.6f -> 0.23
-        else -> 0.0
-    }
-
-    val glowFilter = if (glowAlpha > 0) {
-        "drop-shadow(0 0 14px rgba(90, 170, 255, $glowAlpha))"
+    val glowFilter = if (hovered) {
+        "drop-shadow(0 0 14px rgba(90, 170, 255, 0.5))"
     } else {
         "none"
     }
 
-    val overlayBackground = ProjectCardSvgGenerator.overlayBackground(hovered, estimatedWidth, estimatedHeight)
+    val overlayBackground = remember(hovered, estimatedWidth, estimatedHeight) {
+        overlayBackground(hovered, estimatedWidth, estimatedHeight)
+    }
 
     Div(
         attrs = Modifier

@@ -40,7 +40,9 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 
 val BioContainerStyle = CssStyle.base {
-    Modifier.fillMaxWidth().gap(1.4.cssRem)
+    Modifier
+        .fillMaxWidth()
+        .gap(1.4.cssRem)
 }
 
 val BioNameStyle = CssStyle {
@@ -62,86 +64,44 @@ val BioRoleStyle = CssStyle.base {
 
 val BioParagraphStyle = CssStyle.base {
     Modifier
-        .fontSize(1.02.cssRem)
-        .lineHeight(1.7)
-        .color(colorMode.toSitePalette().textMuted)
+        .fontSize(1.cssRem)
+        .lineHeight(1.6)
+        .color(org.jetbrains.compose.web.css.Color("#E2E8F0"))
+        .textAlign(TextAlign.Center)
 }
 
 @Composable
 fun BioSection(bio: HomepageBio) {
-    val palette = ColorMode.current.toSitePalette()
-    val words = bio.name.split(" ").filter { it.isNotBlank() }
-    val firstLine = words.take(1).joinToString(" ")
-    val secondLine = words.drop(1).joinToString(" ").ifBlank { bio.name }
-
     Column(BioContainerStyle.toModifier()) {
         Column(
             Modifier
                 .fillMaxWidth()
-                .gap(1.cssRem)
-                .displayUntil(Breakpoint.MD),
-        ) {
-            Row(Modifier.fillMaxWidth().gap(1.cssRem)) {
-                Image(
-                    bio.primaryPhotoUrl,
-                    "${bio.name} profile",
-                    Modifier
-                        .size(7.2.cssRem)
-                        .borderRadius(50.percent)
-                        .border(width = 3.px, color = palette.brand.cyan.toRgb().copyf(alpha = 0.52f))
-                        .objectFit(ObjectFit.Cover)
-                        .display(DisplayStyle.Block)
-                )
-                Column(Modifier.gap(0.5.cssRem)) {
-                    Div(BioNameStyle.toAttrs()) {
-                        SpanText(firstLine)
-                        Div(Modifier.color(palette.brand.cyan).toAttrs()) { SpanText(secondLine) }
+                .gap(0.7.cssRem)
+                .toAttrs {
+                    style {
+                        property("max-width", "65ch")
+                        property("margin-left", "auto")
+                        property("margin-right", "auto")
                     }
-                    Div(BioRoleStyle.toAttrs()) { SpanText(bio.role) }
                 }
+        ) {
+            // Render all paragraphs except the last one normally
+            bio.paragraphs.dropLast(1).forEach { paragraph ->
+                Div(BioParagraphStyle.toAttrs()) { SpanText(paragraph) }
             }
 
-            Column(Modifier.fillMaxWidth().gap(0.7.cssRem)) {
-                bio.paragraphs.forEach { paragraph ->
-                    Div(BioParagraphStyle.toAttrs()) { SpanText(paragraph) }
-                }
-            }
-        }
-
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .gap(2.2.cssRem)
-                .displayIfAtLeast(Breakpoint.MD),
-        ) {
-            Image(
-                bio.primaryPhotoUrl,
-                "${bio.name} profile",
-                Modifier
-                    .size(14.cssRem)
-                    .borderRadius(50.percent)
-                    .border(width = 4.px, color = palette.brand.cyan.toRgb().copyf(alpha = 0.54f))
-                    .objectFit(ObjectFit.Cover)
-                    .display(DisplayStyle.Block)
-            )
-
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .maxWidth(46.cssRem)
-                    .gap(0.9.cssRem)
-                    .textAlign(TextAlign.Start)
-            ) {
-                Div(BioNameStyle.toAttrs()) {
-                    SpanText(firstLine)
-                    Div(Modifier.color(palette.brand.cyan).toAttrs()) { SpanText(secondLine) }
-                }
-                Div(BioRoleStyle.toAttrs()) { SpanText(bio.role) }
-
-                Column(Modifier.fillMaxWidth().gap(0.72.cssRem)) {
-                    bio.paragraphs.forEach { paragraph ->
-                        Div(BioParagraphStyle.toAttrs()) { SpanText(paragraph) }
-                    }
+            // Render the last paragraph with italic styling and increased spacing
+            if (bio.paragraphs.isNotEmpty()) {
+                Div(
+                    BioParagraphStyle.toModifier()
+                        .toAttrs {
+                            style {
+                                property("font-style", "italic")
+                                property("margin-top", "1.5rem")
+                            }
+                        }
+                ) {
+                    SpanText(bio.paragraphs.last())
                 }
             }
         }

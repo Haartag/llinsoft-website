@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import llinsoft.site.toSitePalette
+import llinsoft.site.components.utils.SvgGenerator
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
 
@@ -34,88 +35,60 @@ private object IconButtonTokens {
 }
 
 /**
- * SVG generator for icon button borders
+ * Generates button overlay based on state
  */
-private object IconButtonSvgGenerator {
-    private val cache = mutableMapOf<String, String>()
-
-    private fun encodeSvg(svg: String): String {
-        return svg
-            .replace("%", "%25")
-            .replace("#", "%23")
-            .replace("<", "%3C")
-            .replace(">", "%3E")
-            .replace("\"", "%22")
-            .replace("'", "%27")
-            .replace(" ", "%20")
-    }
-
-    fun svgStroke(stroke: String, strokeWidth: Double, opacity: Double, width: Int, height: Int, radiusPx: Int): String {
-        val key = "$stroke|$strokeWidth|$opacity|$width|$height|$radiusPx"
-        return cache.getOrPut(key) {
-            val inset = 0.75
-            val rectW = width - (inset * 2)
-            val rectH = height - (inset * 2)
-
-            val svg = """<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 $width $height' preserveAspectRatio='none'><rect x='$inset' y='$inset' width='$rectW' height='$rectH' rx='$radiusPx' ry='$radiusPx' fill='none' stroke='$stroke' stroke-width='$strokeWidth' stroke-opacity='$opacity' shape-rendering='geometricPrecision'/></svg>""".replace("\n", "")
-
-            "data:image/svg+xml;utf8,${encodeSvg(svg)}"
+private fun buttonOverlay(state: String, width: Int, height: Int, radiusPx: Int): String {
+    return when (state) {
+        "idle" -> {
+            val idle = SvgGenerator.svgStroke(
+                IconButtonTokens.idleStroke,
+                IconButtonTokens.idleStrokeWidth,
+                1.0,
+                width,
+                height,
+                radiusPx
+            )
+            "url(\"$idle\")"
         }
-    }
-
-    fun buttonOverlay(state: String, width: Int, height: Int, radiusPx: Int): String {
-        return when (state) {
-            "idle" -> {
-                val idle = svgStroke(
-                    IconButtonTokens.idleStroke,
-                    IconButtonTokens.idleStrokeWidth,
-                    1.0,
-                    width,
-                    height,
-                    radiusPx
-                )
-                "url(\"$idle\")"
-            }
-            "hover" -> {
-                val inner = svgStroke(
-                    IconButtonTokens.hoverInner,
-                    IconButtonTokens.hoverInnerStrokeWidth,
-                    1.0,
-                    width,
-                    height,
-                    radiusPx
-                )
-                val outer = svgStroke(
-                    IconButtonTokens.hoverOuter,
-                    IconButtonTokens.hoverOuterStrokeWidth,
-                    1.0,
-                    width,
-                    height,
-                    radiusPx
-                )
-                "url(\"$inner\"), url(\"$outer\")"
-            }
-            "active" -> {
-                val inner = svgStroke(
-                    IconButtonTokens.activeInner,
-                    IconButtonTokens.activeInnerStrokeWidth,
-                    1.0,
-                    width,
-                    height,
-                    radiusPx
-                )
-                val outer = svgStroke(
-                    IconButtonTokens.activeOuter,
-                    IconButtonTokens.activeOuterStrokeWidth,
-                    1.0,
-                    width,
-                    height,
-                    radiusPx
-                )
-                "url(\"$inner\"), url(\"$outer\")"
-            }
-            else -> "none"
+        "hover" -> {
+            val inner = SvgGenerator.svgStroke(
+                IconButtonTokens.hoverInner,
+                IconButtonTokens.hoverInnerStrokeWidth,
+                1.0,
+                width,
+                height,
+                radiusPx
+            )
+            val outer = SvgGenerator.svgStroke(
+                IconButtonTokens.hoverOuter,
+                IconButtonTokens.hoverOuterStrokeWidth,
+                1.0,
+                width,
+                height,
+                radiusPx
+            )
+            "url(\"$inner\"), url(\"$outer\")"
         }
+        "active" -> {
+            val inner = SvgGenerator.svgStroke(
+                IconButtonTokens.activeInner,
+                IconButtonTokens.activeInnerStrokeWidth,
+                1.0,
+                width,
+                height,
+                radiusPx
+            )
+            val outer = SvgGenerator.svgStroke(
+                IconButtonTokens.activeOuter,
+                IconButtonTokens.activeOuterStrokeWidth,
+                1.0,
+                width,
+                height,
+                radiusPx
+            )
+            "url(\"$inner\"), url(\"$outer\")"
+        }
+        else -> "none"
     }
 }
 
@@ -157,7 +130,7 @@ fun IconButton(
         else -> "none"
     }
 
-    val overlayBg = IconButtonSvgGenerator.buttonOverlay(state, width, height, IconButtonTokens.radiusPx)
+    val overlayBg = buttonOverlay(state, width, height, IconButtonTokens.radiusPx)
 
     Div(
         attrs = Modifier

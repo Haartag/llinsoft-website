@@ -1,77 +1,252 @@
 [
   {
-    "id": "project-1",
-    "slug": "android-budget-tracker",
-    "title": "Android Budget Tracker",
-    "shortDescription": "A Kotlin Android app for daily expense tracking and monthly insights.",
-    "fullDescription": "Android Budget Tracker helps users track spending categories, set monthly caps, and review trends through simple dashboards.",
-    "techStack": ["Kotlin", "Jetpack Compose", "Room", "Koin"],
+    "id": "zakroma-storage",
+    "slug": "zakroma-storage-app",
+    "title": "3akroma",
+    "shortDescription": "Simple app to manage storage of something. Or maybe even everything.",
+    "fullDescription": "3akroma is a simple and easy to learn and manage app to track and store anything - groceries, supplies, tools, and anything else you can think of! Built with modern Android technologies and clean architecture principles, it provides an intuitive interface for organizing and tracking your inventory with ease.",
+    "techStack": ["Kotlin", "Jetpack Compose", "Clean Architecture", "Kotlin Coroutines", "Room", "Hilt", "Coil", "JUnit"],
+    "featuredTech": ["Room", "Coil", "JUnit"],
     "features": [
-      "Offline-first expense logging",
-      "Category-based monthly budgets",
-      "CSV export for accounting"
+      "Track and organize any type of items",
+      "Offline-first data persistence with Room",
+      "Clean and intuitive Material Design interface",
+      "Image support for visual item identification",
+      "Category-based organization"
     ],
-    "thumbnailUrl": "/images/projects/project-1-thumb.svg",
-    "heroImageUrl": "/images/projects/project-1-thumb.svg",
+    "thumbnailUrl": "/images/projects/food-thumb.png",
+    "heroImageUrl": "/images/projects/food-hero.png",
     "galleryImages": [
-      "/images/projects/project-1-thumb.svg",
-      "/images/projects/project-2-thumb.svg"
+      "/images/projects/food-screen1.png",
+      "/images/projects/food-screen2.png",
+      "/images/projects/food-screen3.png",
+      "/images/projects/food-screen4.png"
     ],
     "links": {
-      "github": "https://github.com/example/android-budget-tracker",
-      "playStore": "https://play.google.com/store/apps/details?id=com.example.budgettracker"
+      "github": "https://github.com/Haartag/ComposedStorage",
+      "playStore": "https://play.google.com/store/apps/details?id=com.valerytimofeev.composedstorage"
     },
-    "date": "2026-01",
+    "date": "2024-01",
     "order": 1
   },
   {
-    "id": "project-2",
-    "slug": "team-kanban-web",
-    "title": "Team Kanban Web",
-    "shortDescription": "A collaborative kanban board for sprint planning and task tracking.",
-    "fullDescription": "Team Kanban Web provides drag-and-drop task management, swimlanes, and role-based permissions for small product teams.",
-    "techStack": ["Kotlin", "Ktor", "PostgreSQL", "Docker"],
+    "id": "heroes-helper",
+    "slug": "heroes-helper-h3",
+    "title": "Heroes Helper",
+    "shortDescription": "An app for a 20-year-old retro-game. Advanced pandora's box calculator for Heroes III HotA.",
+    "fullDescription": "Heroes Helper is a simple and easy-to-use app for Heroes III HotA that allows you to determine the correct contents of Pandora's Box. You will be able to find out the percentage chance of rewards, the possible range of the number of guards and the most probable guards of the box. Perfect companion for Heroes III enthusiasts looking to optimize their gameplay.",
+    "techStack": ["Kotlin", "Jetpack Compose", "Clean Architecture", "Kotlin Coroutines", "Room", "Hilt", "JUnit"],
+    "featuredTech": ["Room", "Hilt", "JUnit"],
     "features": [
-      "Real-time board updates",
-      "Sprint and backlog views",
-      "Role-based access controls"
+      "Calculate Pandora's Box contents and rewards",
+      "Determine guard probability and ranges",
+      "Percentage-based reward analysis",
+      "Offline calculation engine",
+      "Clean Material Design interface"
     ],
-    "thumbnailUrl": "/images/projects/project-2-thumb.svg",
-    "heroImageUrl": "/images/projects/project-2-thumb.svg",
+    "thumbnailUrl": "/images/projects/heroes-thumb.png",
+    "heroImageUrl": "/images/projects/heroes-hero.png",
     "galleryImages": [
-      "/images/projects/project-2-thumb.svg",
-      "/images/projects/project-1-thumb.svg",
-      "/images/projects/project-3-thumb.svg"
+      "/images/projects/heroes-screen1.png",
+      "/images/projects/heroes-screen2.png",
+      "/images/projects/heroes-screen3.png",
+      "/images/projects/heroes-screen4.png"
     ],
     "links": {
-      "github": "https://github.com/example/team-kanban-web",
-      "liveDemo": "https://demo.example.com/team-kanban-web"
+      "github": "https://github.com/Haartag/H3Pand",
+      "playStore": "https://play.google.com/store/apps/details?id=com.valerytimofeev.h3pand"
     },
-    "date": "2026-02",
+    "date": "2023-11",
     "order": 2
   },
   {
-    "id": "project-3",
-    "slug": "fitness-companion-ios",
-    "title": "Fitness Companion iOS",
-    "shortDescription": "An iOS training planner with workout templates and progress snapshots.",
-    "fullDescription": "Fitness Companion iOS lets users build workout routines, track performance over time, and sync plans across devices.",
-    "techStack": ["Kotlin Multiplatform", "SwiftUI", "Firebase"],
+    "id": "gpt-chat-mobile",
+    "slug": "openai-chat-app",
+    "title": "Chat with OpenAI",
+    "shortDescription": "AI chat app with customizable prompts and advanced OpenAI integration.",
+    "fullDescription": "Intuitive Android Kotlin app designed for dynamic interactions with OpenAI's GPT models. This app allows you to craft, store, organize, and categorize prompts with ease. Tailor your conversational AI journey by selecting between models, and fine-tune your dialogue with customizable settings for temperature and topP.",
+    "techStack": ["Kotlin", "Jetpack Compose", "Clean Architecture", "Hilt", "Kotlin Coroutines", "OpenAI API", "Shared Preferences", "SqlDelight Database"],
+    "featuredTech": ["OpenAI API", "SqlDelight Database", "Shared Preferences"],
     "features": [
-      "Custom workout templates",
-      "Session history analytics",
-      "Cloud sync for plans"
+      "Dynamic GPT model selection",
+      "Prompt management and categorization",
+      "Customizable temperature and topP settings",
+      "Local storage with SqlDelight",
+      "Organized conversation history"
     ],
-    "thumbnailUrl": "/images/projects/project-3-thumb.svg",
-    "heroImageUrl": "/images/projects/project-3-thumb.svg",
+    "thumbnailUrl": "/images/projects/chat-thumb.png",
+    "heroImageUrl": "/images/projects/chat-hero.png",
     "galleryImages": [
-      "/images/projects/project-3-thumb.svg"
+      "/images/projects/chat-screen1.png",
+      "/images/projects/chat-screen2.png",
+      "/images/projects/chat-screen3.png",
+      "/images/projects/chat-screen4.png"
     ],
     "links": {
-      "github": "https://github.com/example/fitness-companion",
-      "appStore": "https://apps.apple.com/app/id1234567890"
+      "github": "https://github.com/Haartag/GPTMobile"
     },
-    "date": "2026-03",
+    "date": "2023-08",
     "order": 3
+  },
+  {
+    "id": "http-requester",
+    "slug": "http-requester-pro",
+    "title": "HTTP Requester",
+    "shortDescription": "HTTP requester with proxy, multithreading and other cool features.",
+    "fullDescription": "Application for sending HTTP requests (GET or POST) with a set of very useful features: the use of proxies, random headers, multi-threading to perform a large number of simultaneous requests, saving requests to favorites, logs (including saving them into External storage for access), the ability to set a chain of requests and execute them within one session and much more.",
+    "techStack": ["Kotlin", "Jetpack Compose", "Clean Architecture", "Hilt", "Kotlin Coroutines", "Retrofit2", "OkHttp3", "Kotlinx Serialization", "Shared Preferences"],
+    "featuredTech": ["Retrofit2", "OkHttp3", "Kotlinx Serialization"],
+    "features": [
+      "Multi-threaded request execution",
+      "Proxy support with rotation",
+      "Random header generation",
+      "Request chaining and sessions",
+      "Comprehensive logging system",
+      "Favorites and request history"
+    ],
+    "thumbnailUrl": "/images/projects/http-thumb.png",
+    "heroImageUrl": "/images/projects/http-hero.png",
+    "galleryImages": [
+      "/images/projects/http-screen1.png",
+      "/images/projects/http-screen2.png",
+      "/images/projects/http-screen3.png",
+      "/images/projects/http-screen4.png"
+    ],
+    "links": {},
+    "date": "2023-06",
+    "order": 4
+  },
+  {
+    "id": "server-alerts",
+    "slug": "server-monitoring-alerts",
+    "title": "Server Alerts",
+    "shortDescription": "Application for monitoring server errors through its logs.",
+    "fullDescription": "An application that tracks server logs and quickly alerts the user of any errors and warnings. The user can customize key words for tracking, choose notification sounds for each group of tracked words. Through the use of Foreground services, the user can receive notifications even when the application is turned off and the phone is inactive.",
+    "techStack": ["Kotlin", "Jetpack Compose", "Clean Architecture", "Foreground Service", "Notifications", "Hilt", "Kotlin Coroutines", "Retrofit2", "OkHttp3", "KotlinX Serialization", "Preferences DataStore"],
+    "featuredTech": ["Foreground Service", "Notifications", "Preferences DataStore"],
+    "features": [
+      "Real-time server log monitoring",
+      "Customizable keyword tracking",
+      "Background monitoring with Foreground Service",
+      "Custom notification sounds per alert group",
+      "Persistent notifications when app is closed"
+    ],
+    "thumbnailUrl": "/images/projects/alerts-thumb.png",
+    "heroImageUrl": "/images/projects/alerts-hero.png",
+    "galleryImages": [
+      "/images/projects/alerts-screen1.png",
+      "/images/projects/alerts-screen2.png",
+      "/images/projects/alerts-screen3.png",
+      "/images/projects/alerts-screen4.png"
+    ],
+    "links": {},
+    "date": "2023-05",
+    "order": 5
+  },
+  {
+    "id": "ebay-orders",
+    "slug": "ebay-order-management",
+    "title": "eBay Orders",
+    "shortDescription": "App for managing eBay orders and tracking parcels.",
+    "fullDescription": "Introducing the eBay Order Management App. This application interfaces with eBay's API to download order information for a selected timeframe and organizes the data into a user-specified Google Sheets table. Leveraging the power of MLKit, the app is capable of identifying parcel tracking codes through the camera. Once recognized, these codes can be marked as 'Delivered' in the Google Sheets table or new codes can be added as required.",
+    "techStack": ["Kotlin", "Jetpack Compose", "Clean Architecture", "Hilt", "Kotlin Coroutines", "Retrofit2", "OkHttp3", "CameraX", "MLKit", "eBay API", "Google Sheets API"],
+    "featuredTech": ["MLKit", "eBay API", "Google Sheets API"],
+    "features": [
+      "eBay API integration for order sync",
+      "Google Sheets export and management",
+      "Camera-based tracking code recognition with MLKit",
+      "Automated delivery status updates",
+      "Custom timeframe order filtering"
+    ],
+    "thumbnailUrl": "/images/projects/ebay-thumb.png",
+    "heroImageUrl": "/images/projects/ebay-hero.png",
+    "galleryImages": [
+      "/images/projects/ebay-screen1.png",
+      "/images/projects/ebay-screen2.png",
+      "/images/projects/ebay-screen3.png"
+    ],
+    "links": {},
+    "date": "2023-04",
+    "order": 6
+  },
+  {
+    "id": "property-management",
+    "slug": "property-management-solution",
+    "title": "Property Management Solution",
+    "shortDescription": "Property Management Solution - Tracking & Automation.",
+    "fullDescription": "The app offers property owners access to their accrued payments, providing them with complete control over their finances. For administrators, app provides robust tools to manage customer payments, including the ability to send personalized or broadcast push notifications. The application further simplifies tasks with its automatic calculation feature, ensuring accurate tracking of payment schedules and debts.",
+    "techStack": ["Kotlin", "Jetpack Compose", "Clean Architecture", "Hilt", "Kotlin Coroutines", "Firebase", "Push Notifications", "Retrofit2", "OkHttp3", "Coil", "Shared Preferences"],
+    "featuredTech": ["Firebase", "Push Notifications", "Coil"],
+    "features": [
+      "Payment tracking and management",
+      "Automated payment calculations",
+      "Push notification system (personalized and broadcast)",
+      "Admin and owner role separation",
+      "Debt tracking and alerts"
+    ],
+    "thumbnailUrl": "/images/projects/property-thumb.png",
+    "heroImageUrl": "/images/projects/property-hero.png",
+    "galleryImages": [
+      "/images/projects/property-screen1.png",
+      "/images/projects/property-screen2.png",
+      "/images/projects/property-screen3.png",
+      "/images/projects/property-screen4.png"
+    ],
+    "links": {},
+    "date": "2023-03",
+    "order": 7
+  },
+  {
+    "id": "pronunciation-learning",
+    "slug": "language-pronunciation-app",
+    "title": "Pronunciation Learning",
+    "shortDescription": "App for interactive language practice with speech synthesis.",
+    "fullDescription": "An Android app designed in Kotlin for practical language learning. Utilizing Google Cloud Text-to-Speech, it allows users to generate speech from text, create sequences with customizable voices, and curate word sets. The built-in player offers easy playback, while progress tracking keeps learners on course.",
+    "techStack": ["Kotlin", "Jetpack Compose", "Clean Architecture", "Hilt", "Kotlin Coroutines", "Text-to-Speech", "Google Cloud Services", "Retrofit2", "OkHttp3", "Room Database"],
+    "featuredTech": ["Text-to-Speech", "Google Cloud Services", "Room Database"],
+    "features": [
+      "Google Cloud Text-to-Speech integration",
+      "Customizable voice selection",
+      "Word set creation and management",
+      "Progress tracking for learners",
+      "Sequence playback functionality"
+    ],
+    "thumbnailUrl": "/images/projects/language-thumb.png",
+    "heroImageUrl": "/images/projects/language-hero.png",
+    "galleryImages": [
+      "/images/projects/language-screen1.png",
+      "/images/projects/language-screen2.png",
+      "/images/projects/language-screen3.png",
+      "/images/projects/language-screen4.png"
+    ],
+    "links": {},
+    "date": "2023-02",
+    "order": 8
+  },
+  {
+    "id": "portfolio-website-compose",
+    "slug": "portfolio-compose-web",
+    "title": "...and this website!",
+    "shortDescription": "Simple portfolio website on Kotlin + Compose Web",
+    "fullDescription": "A website made entirely in Kotlin, using the Compose Web. A little ugly, but hey, all in Kotlin! This project demonstrates the power of Kotlin Multiplatform for web development using Compose for Web framework.",
+    "techStack": ["Kotlin Multiplatform", "Compose Web", "KMDC"],
+    "featuredTech": ["Kotlin Multiplatform", "Compose Web", "KMDC"],
+    "features": [
+      "Pure Kotlin web application",
+      "Compose for Web framework",
+      "Multiplatform capabilities",
+      "Material Design components"
+    ],
+    "thumbnailUrl": "/images/projects/web-thumb.png",
+    "heroImageUrl": "/images/projects/web-hero.png",
+    "galleryImages": [
+      "/images/projects/web-screen1.png",
+      "/images/projects/web-screen2.png"
+    ],
+    "links": {
+      "github": "https://github.com/Haartag/PortfolioWebsite"
+    },
+    "date": "2022-12",
+    "order": 9
   }
 ]
