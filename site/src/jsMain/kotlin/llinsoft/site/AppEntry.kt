@@ -24,7 +24,8 @@ private const val COLOR_MODE_KEY = "site:colorMode"
 
 @InitSilk
 fun initColorMode(ctx: InitSilkContext) {
-    ctx.config.initialColorMode = ColorMode.loadFromLocalStorage(COLOR_MODE_KEY) ?: ColorMode.systemPreference
+    // Force dark mode only - light theme colors need refinement
+    ctx.config.initialColorMode = ColorMode.DARK
 }
 
 @InitSilk
