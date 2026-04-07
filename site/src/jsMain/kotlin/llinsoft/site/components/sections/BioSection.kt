@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
@@ -13,7 +14,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
+import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
@@ -42,7 +46,21 @@ import org.jetbrains.compose.web.dom.Div
 val BioContainerStyle = CssStyle.base {
     Modifier
         .fillMaxWidth()
-        .gap(1.4.cssRem)
+        .margin(top = 2.52.cssRem)
+}
+
+val BioTitleStyle = CssStyle.base {
+    Modifier
+        .fontSize(2.1.cssRem)
+        .color(colorMode.toSitePalette().brand.cyan)
+}
+
+val BioCardStyle = CssStyle.base {
+    Modifier
+        .padding(40.px)
+        .backgroundColor(colorMode.toSitePalette().surface)
+        .borderRadius(1.cssRem)
+        .border(width = 1.px, color = colorMode.toSitePalette().border)
 }
 
 val BioNameStyle = CssStyle {
@@ -64,44 +82,62 @@ val BioRoleStyle = CssStyle.base {
 
 val BioParagraphStyle = CssStyle.base {
     Modifier
-        .fontSize(1.cssRem)
+        .fontSize(16.px)
         .lineHeight(1.6)
-        .color(org.jetbrains.compose.web.css.Color("#E2E8F0"))
-        .textAlign(TextAlign.Center)
+        .color(org.jetbrains.compose.web.css.Color("#E5E7EB"))
+        .opacity(0.95)
+        .letterSpacing(0.01.cssRem)
+        .textAlign(TextAlign.Start)
 }
 
 @Composable
 fun BioSection(bio: HomepageBio) {
-    Column(BioContainerStyle.toModifier()) {
-        Column(
-            Modifier
+    Div(BioContainerStyle.toAttrs()) {
+        Div(BioTitleStyle.toAttrs()) {
+            SpanText("About Me")
+        }
+
+        Div(
+            attrs = Modifier
                 .fillMaxWidth()
-                .gap(0.7.cssRem)
+                .margin(top = 1.22.cssRem)
                 .toAttrs {
                     style {
-                        property("max-width", "65ch")
-                        property("margin-left", "auto")
-                        property("margin-right", "auto")
+                        property("max-width", "1150px")
                     }
                 }
         ) {
-            // Render all paragraphs except the last one normally
-            bio.paragraphs.dropLast(1).forEach { paragraph ->
-                Div(BioParagraphStyle.toAttrs()) { SpanText(paragraph) }
-            }
-
-            // Render the last paragraph with italic styling and increased spacing
-            if (bio.paragraphs.isNotEmpty()) {
+            Div(BioCardStyle.toAttrs()) {
                 Div(
-                    BioParagraphStyle.toModifier()
+                    attrs = Modifier
                         .toAttrs {
                             style {
-                                property("font-style", "italic")
-                                property("margin-top", "1.5rem")
+                                property("display", "flex")
+                                property("flex-direction", "column")
                             }
                         }
                 ) {
-                    SpanText(bio.paragraphs.last())
+                    bio.paragraphs.forEachIndexed { index, paragraph ->
+                        val isLast = index == bio.paragraphs.size - 1
+
+                        Div(
+                            attrs = BioParagraphStyle.toModifier().toAttrs {
+                                style {
+                                    property("font-weight", "300")
+                                    // Line height is 1.6, so margin-bottom = 1.6 * 1.75 = 2.8em
+                                    if (!isLast) {
+                                        property("margin-bottom", "2.8em")
+                                    }
+                                    if (isLast) {
+                                        property("font-style", "italic")
+                                        property("margin-top", "1.5rem")
+                                    }
+                                }
+                            }
+                        ) {
+                            SpanText(paragraph)
+                        }
+                    }
                 }
             }
         }

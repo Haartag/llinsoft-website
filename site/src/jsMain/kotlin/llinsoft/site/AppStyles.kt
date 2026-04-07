@@ -29,6 +29,7 @@ fun initSiteStyles(ctx: InitSilkContext) {
         Modifier
             .fontFamily("Inter", "Roboto", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif")
             .fontSize(16.px)
+            .fontWeight(300)
             .lineHeight(1.6)
             .letterSpacing(0.01.cssRem)
     }
