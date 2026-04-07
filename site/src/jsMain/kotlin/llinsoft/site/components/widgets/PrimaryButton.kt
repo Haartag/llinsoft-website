@@ -1,99 +1,39 @@
 package llinsoft.site.components.widgets
 
 import androidx.compose.runtime.*
-import com.varabyte.kobweb.compose.ui.Modifier
-import com.varabyte.kobweb.compose.ui.modifiers.*
-import com.varabyte.kobweb.compose.ui.toAttrs
-import com.varabyte.kobweb.silk.components.graphics.Image
-import com.varabyte.kobweb.silk.components.text.SpanText
-import com.varabyte.kobweb.silk.theme.colors.ColorMode
-import llinsoft.site.toSitePalette
-import llinsoft.site.components.utils.SvgGenerator
 import org.jetbrains.compose.web.css.*
-import org.jetbrains.compose.web.dom.Div
 
 /**
  * Design tokens for primary buttons
  */
-private object PrimaryButtonTokens {
-    const val radiusPx = 10
-    const val defaultWidth = 220
-    const val defaultHeight = 54
+private object PrimaryButtonTokens : ButtonTokens {
+    override val radiusPx = 10
+    override val defaultWidth = 220
+    override val defaultHeight = 54
+    override val paddingLeftRight = 1.2.cssRem
+    override val paddingTopBottom = 0.8.cssRem
+    override val fontSize = 1.cssRem
+    override val gap: CSSNumericValue<CSSUnit.rem> = 0.7.cssRem
 
-    // Button colors
-    const val idleStroke = "rgba(120, 180, 245, 0.35)"
-    const val hoverInner = "rgba(150, 210, 255, 1.0)"
-    const val hoverOuter = "rgba(120, 190, 255, 0.65)"
-    const val activeInner = "rgba(90, 170, 255, 1.0)"
-    const val activeOuter = "rgba(60, 140, 235, 0.75)"
+    // Colors
+    override val idleStroke = "rgba(120, 180, 245, 0.35)"
+    override val hoverInner = "rgba(150, 210, 255, 1.0)"
+    override val hoverOuter = "rgba(120, 190, 255, 0.65)"
+    override val activeInner = "rgba(90, 170, 255, 1.0)"
+    override val activeOuter = "rgba(60, 140, 235, 0.75)"
 
     // Stroke widths
-    const val idleStrokeWidth = 1.0
-    const val hoverInnerStrokeWidth = 1.4
-    const val hoverOuterStrokeWidth = 2.2
-    const val activeInnerStrokeWidth = 1.6
-    const val activeOuterStrokeWidth = 2.8
+    override val idleStrokeWidth = 1.0
+    override val hoverInnerStrokeWidth = 1.4
+    override val hoverOuterStrokeWidth = 2.2
+    override val activeInnerStrokeWidth = 1.6
+    override val activeOuterStrokeWidth = 2.8
 
-    // Transition
-    const val transitionMs = 160
-}
-
-/**
- * Generates button overlay based on state
- */
-private fun buttonOverlay(state: String, width: Int, height: Int, radiusPx: Int): String {
-    return when (state) {
-        "idle" -> {
-            val idle = SvgGenerator.svgStroke(
-                PrimaryButtonTokens.idleStroke,
-                PrimaryButtonTokens.idleStrokeWidth,
-                1.0,
-                width,
-                height,
-                radiusPx
-            )
-            "url(\"$idle\")"
-        }
-        "hover" -> {
-            val inner = SvgGenerator.svgStroke(
-                PrimaryButtonTokens.hoverInner,
-                PrimaryButtonTokens.hoverInnerStrokeWidth,
-                1.0,
-                width,
-                height,
-                radiusPx
-            )
-            val outer = SvgGenerator.svgStroke(
-                PrimaryButtonTokens.hoverOuter,
-                PrimaryButtonTokens.hoverOuterStrokeWidth,
-                1.0,
-                width,
-                height,
-                radiusPx
-            )
-            "url(\"$inner\"), url(\"$outer\")"
-        }
-        "active" -> {
-            val inner = SvgGenerator.svgStroke(
-                PrimaryButtonTokens.activeInner,
-                PrimaryButtonTokens.activeInnerStrokeWidth,
-                1.0,
-                width,
-                height,
-                radiusPx
-            )
-            val outer = SvgGenerator.svgStroke(
-                PrimaryButtonTokens.activeOuter,
-                PrimaryButtonTokens.activeOuterStrokeWidth,
-                1.0,
-                width,
-                height,
-                radiusPx
-            )
-            "url(\"$inner\"), url(\"$outer\")"
-        }
-        else -> "none"
-    }
+    // Effects
+    override val transitionMs = 160
+    override val hoverGlow = "drop-shadow(0 0 16px rgba(90, 170, 255, 0.55))"
+    override val activeGlow = "drop-shadow(0 0 20px rgba(90, 170, 255, 0.75))"
+    override val hoverTranslateY = "-2px"
 }
 
 /**
@@ -122,89 +62,13 @@ fun PrimaryButton(
     iconSrc: String? = null,
     iconFirst: Boolean = true
 ) {
-    val palette = ColorMode.current.toSitePalette()
-    var hovered by remember { mutableStateOf(false) }
-    var pressed by remember { mutableStateOf(false) }
-
-    val state = when {
-        pressed -> "active"
-        hovered -> "hover"
-        else -> "idle"
-    }
-
-    val glowFilter = when {
-        pressed -> "drop-shadow(0 0 20px rgba(90, 170, 255, 0.75))"
-        hovered -> "drop-shadow(0 0 16px rgba(90, 170, 255, 0.55))"
-        else -> "none"
-    }
-
-    val overlayBg = buttonOverlay(state, width, height, PrimaryButtonTokens.radiusPx)
-
-    Div(
-        attrs = Modifier
-            .display(DisplayStyle.InlineBlock)
-            .onMouseEnter { hovered = true }
-            .onMouseLeave {
-                hovered = false
-                pressed = false
-            }
-            .toAttrs {
-                style {
-                    property("border-radius", "${PrimaryButtonTokens.radiusPx}px")
-                    property("filter", glowFilter)
-                    property("transform", if (hovered) "translateY(-2px)" else "translateY(0px)")
-                    property("transition", "filter 500ms ease, transform ${PrimaryButtonTokens.transitionMs}ms ease")
-                }
-            }
-    ) {
-        org.jetbrains.compose.web.dom.Button(
-            attrs = Modifier
-                .width(width.px)
-                .height(height.px)
-                .padding(leftRight = 1.2.cssRem, topBottom = 0.8.cssRem)
-                .backgroundColor(palette.elevatedSurface)
-                .borderRadius(PrimaryButtonTokens.radiusPx.px)
-                .border(width = 0.px, color = palette.surface)
-                .position(Position.Relative)
-                .toAttrs {
-                    attr("type", "button")
-                    style {
-                        property("cursor", "pointer")
-                        property("display", "flex")
-                        property("align-items", "center")
-                        property("justify-content", "center")
-                        property("gap", "0.7rem")
-                        property("font-size", "1rem")
-                        property("font-weight", "500")
-                        property("color", "${palette.textPrimary}")
-                    }
-                    onClick { onClick() }
-                    onMouseDown { pressed = true }
-                    onMouseUp { pressed = false }
-                }
-        ) {
-            if (iconSrc != null && iconFirst) {
-                Image(iconSrc, "", Modifier.size(1.1.cssRem).display(DisplayStyle.Block))
-            }
-            SpanText(text)
-            if (iconSrc != null && !iconFirst) {
-                Image(iconSrc, "", Modifier.size(1.1.cssRem).display(DisplayStyle.Block))
-            }
-
-            // SVG overlay
-            Div(attrs = {
-                style {
-                    position(Position.Absolute)
-                    property("inset", "0")
-                    width(100.percent)
-                    height(100.percent)
-                    property("border-radius", "${PrimaryButtonTokens.radiusPx}px")
-                    property("pointer-events", "none")
-                    property("background-size", "100% 100%")
-                    property("background-repeat", "no-repeat")
-                    property("background-image", overlayBg)
-                }
-            }) {}
-        }
-    }
+    BaseButton(
+        text = text,
+        onClick = onClick,
+        tokens = PrimaryButtonTokens,
+        width = width,
+        height = height,
+        iconSrc = iconSrc,
+        iconFirst = iconFirst
+    )
 }
