@@ -6,6 +6,7 @@ import com.varabyte.kobweb.compose.css.TextAlign
 import com.varabyte.kobweb.compose.foundation.layout.Column
 import com.varabyte.kobweb.compose.foundation.layout.Row
 import com.varabyte.kobweb.compose.ui.Modifier
+import com.varabyte.kobweb.compose.ui.modifiers.backgroundColor
 import com.varabyte.kobweb.compose.ui.modifiers.border
 import com.varabyte.kobweb.compose.ui.modifiers.borderRadius
 import com.varabyte.kobweb.compose.ui.modifiers.color
@@ -13,7 +14,10 @@ import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.fontSize
 import com.varabyte.kobweb.compose.ui.modifiers.gap
+import com.varabyte.kobweb.compose.ui.modifiers.letterSpacing
 import com.varabyte.kobweb.compose.ui.modifiers.lineHeight
+import com.varabyte.kobweb.compose.ui.modifiers.margin
+import com.varabyte.kobweb.compose.ui.modifiers.padding
 import com.varabyte.kobweb.compose.ui.modifiers.maxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.opacity
@@ -40,7 +44,23 @@ import org.jetbrains.compose.web.css.px
 import org.jetbrains.compose.web.dom.Div
 
 val BioContainerStyle = CssStyle.base {
-    Modifier.fillMaxWidth().gap(1.4.cssRem)
+    Modifier
+        .fillMaxWidth()
+        .margin(top = 2.52.cssRem)
+}
+
+val BioTitleStyle = CssStyle.base {
+    Modifier
+        .fontSize(2.1.cssRem)
+        .color(colorMode.toSitePalette().brand.cyan)
+}
+
+val BioCardStyle = CssStyle.base {
+    Modifier
+        .padding(40.px)
+        .backgroundColor(colorMode.toSitePalette().surface)
+        .borderRadius(1.cssRem)
+        .border(width = 1.px, color = colorMode.toSitePalette().border)
 }
 
 val BioNameStyle = CssStyle {
@@ -62,85 +82,61 @@ val BioRoleStyle = CssStyle.base {
 
 val BioParagraphStyle = CssStyle.base {
     Modifier
-        .fontSize(1.02.cssRem)
-        .lineHeight(1.7)
-        .color(colorMode.toSitePalette().textMuted)
+        .fontSize(16.px)
+        .lineHeight(1.6)
+        .color(org.jetbrains.compose.web.css.Color("#E5E7EB"))
+        .opacity(0.95)
+        .letterSpacing(0.01.cssRem)
+        .textAlign(TextAlign.Start)
 }
 
 @Composable
 fun BioSection(bio: HomepageBio) {
-    val palette = ColorMode.current.toSitePalette()
-    val words = bio.name.split(" ").filter { it.isNotBlank() }
-    val firstLine = words.take(1).joinToString(" ")
-    val secondLine = words.drop(1).joinToString(" ").ifBlank { bio.name }
-
-    Column(BioContainerStyle.toModifier()) {
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .gap(1.cssRem)
-                .displayUntil(Breakpoint.MD),
-        ) {
-            Row(Modifier.fillMaxWidth().gap(1.cssRem)) {
-                Image(
-                    bio.primaryPhotoUrl,
-                    "${bio.name} profile",
-                    Modifier
-                        .size(7.2.cssRem)
-                        .borderRadius(50.percent)
-                        .border(width = 3.px, color = palette.brand.cyan.toRgb().copyf(alpha = 0.52f))
-                        .objectFit(ObjectFit.Cover)
-                        .display(DisplayStyle.Block)
-                )
-                Column(Modifier.gap(0.5.cssRem)) {
-                    Div(BioNameStyle.toAttrs()) {
-                        SpanText(firstLine)
-                        Div(Modifier.color(palette.brand.cyan).toAttrs()) { SpanText(secondLine) }
-                    }
-                    Div(BioRoleStyle.toAttrs()) { SpanText(bio.role) }
-                }
-            }
-
-            Column(Modifier.fillMaxWidth().gap(0.7.cssRem)) {
-                bio.paragraphs.forEach { paragraph ->
-                    Div(BioParagraphStyle.toAttrs()) { SpanText(paragraph) }
-                }
-            }
+    Div(BioContainerStyle.toAttrs()) {
+        Div(BioTitleStyle.toAttrs()) {
+            SpanText("About Me")
         }
 
-        Row(
-            Modifier
+        Div(
+            attrs = Modifier
                 .fillMaxWidth()
-                .gap(2.2.cssRem)
-                .displayIfAtLeast(Breakpoint.MD),
-        ) {
-            Image(
-                bio.primaryPhotoUrl,
-                "${bio.name} profile",
-                Modifier
-                    .size(14.cssRem)
-                    .borderRadius(50.percent)
-                    .border(width = 4.px, color = palette.brand.cyan.toRgb().copyf(alpha = 0.54f))
-                    .objectFit(ObjectFit.Cover)
-                    .display(DisplayStyle.Block)
-            )
-
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .maxWidth(46.cssRem)
-                    .gap(0.9.cssRem)
-                    .textAlign(TextAlign.Start)
-            ) {
-                Div(BioNameStyle.toAttrs()) {
-                    SpanText(firstLine)
-                    Div(Modifier.color(palette.brand.cyan).toAttrs()) { SpanText(secondLine) }
+                .margin(top = 1.22.cssRem)
+                .toAttrs {
+                    style {
+                        property("max-width", "1150px")
+                    }
                 }
-                Div(BioRoleStyle.toAttrs()) { SpanText(bio.role) }
+        ) {
+            Div(BioCardStyle.toAttrs()) {
+                Div(
+                    attrs = Modifier
+                        .toAttrs {
+                            style {
+                                property("display", "flex")
+                                property("flex-direction", "column")
+                            }
+                        }
+                ) {
+                    bio.paragraphs.forEachIndexed { index, paragraph ->
+                        val isLast = index == bio.paragraphs.size - 1
 
-                Column(Modifier.fillMaxWidth().gap(0.72.cssRem)) {
-                    bio.paragraphs.forEach { paragraph ->
-                        Div(BioParagraphStyle.toAttrs()) { SpanText(paragraph) }
+                        Div(
+                            attrs = BioParagraphStyle.toModifier().toAttrs {
+                                style {
+                                    property("font-weight", "300")
+                                    // Line height is 1.6, so margin-bottom = 1.6 * 1.75 = 2.8em
+                                    if (!isLast) {
+                                        property("margin-bottom", "2.8em")
+                                    }
+                                    if (isLast) {
+                                        property("font-style", "italic")
+                                        property("margin-top", "1.5rem")
+                                    }
+                                }
+                            }
+                        ) {
+                            SpanText(paragraph)
+                        }
                     }
                 }
             }

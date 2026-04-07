@@ -10,6 +10,7 @@ data class Project(
     val shortDescription: String,
     val fullDescription: String,
     val techStack: List<String>,
+    val featuredTech: List<String>,
     val features: List<String>,
     val thumbnailUrl: String,
     val heroImageUrl: String,

@@ -48,6 +48,7 @@ import com.varabyte.kobweb.core.init.InitRoute
 import com.varabyte.kobweb.core.init.InitRouteContext
 import com.varabyte.kobweb.core.layout.Layout
 import com.varabyte.kobweb.core.rememberPageContext
+import kotlinx.browser.window
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.components.navigation.UncoloredLinkVariant
@@ -61,6 +62,13 @@ import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import llinsoft.site.MonoTagTextStyle
 import llinsoft.site.components.layouts.PageLayoutData
+import llinsoft.site.components.widgets.TechTag
+import llinsoft.site.components.widgets.IconButton
+import llinsoft.site.components.widgets.PrimaryButton
+import llinsoft.site.components.widgets.SecondaryButton
+import llinsoft.site.components.widgets.ProjectSection
+import llinsoft.site.components.widgets.ProjectHero
+import llinsoft.site.components.widgets.GalleryThumbnail
 import llinsoft.site.data.ProjectDataSource
 import llinsoft.site.models.Project
 import llinsoft.site.toSitePalette
@@ -294,8 +302,8 @@ private fun overlayBackgroundA1E(hovered: Boolean, selected: Boolean, radiusPx: 
 
 private fun a1eWrapperGlow(hovered: Boolean, selected: Boolean): String {
     return when {
-        hovered -> "drop-shadow(0 0 12px rgba(90, 170, 255, 0.24))"
-        selected -> "drop-shadow(0 0 10px rgba(90, 170, 255, 0.22))"
+        hovered -> "drop-shadow(0 0 12px rgba(90, 170, 255, 0.38))"
+        selected -> "drop-shadow(0 0 10px rgba(90, 170, 255, 0.28))"
         else -> "none"
     }
 }
@@ -409,53 +417,22 @@ fun initProjectSlugPage(ctx: InitRouteContext) {
     ctx.data.add(PageLayoutData("Project"))
 }
 
-@Page("/projects/{slug}")
-@Layout(".components.layouts.PageLayout")
-@Composable
-fun ProjectSlugPage() {
-    val pageContext = rememberPageContext()
-    val slug = pageContext.route.params["slug"]
+/**
+ * State holder for project detail page
+ */
+private class ProjectDetailState {
+    var projects by mutableStateOf<List<Project>>(emptyList())
+    var project by mutableStateOf<Project?>(null)
+    var isLoading by mutableStateOf(true)
+    var errorMessage by mutableStateOf<String?>(null)
+    var galleryIndex by mutableStateOf(0)
+    var galleryRailStart by mutableStateOf(0)
+    var lightboxRailStart by mutableStateOf(0)
+    var isGalleryLightboxOpen by mutableStateOf(false)
+    var galleryHoveredIndex by mutableStateOf<Int?>(null)
+    var lightboxHoveredIndex by mutableStateOf<Int?>(null)
 
-    var projects by remember { mutableStateOf<List<Project>>(emptyList()) }
-    var project by remember { mutableStateOf<Project?>(null) }
-    var isLoading by remember { mutableStateOf(true) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    var galleryIndex by remember { mutableStateOf(0) }
-    var galleryRailStart by remember { mutableStateOf(0) }
-    var lightboxRailStart by remember { mutableStateOf(0) }
-    var isGalleryLightboxOpen by remember { mutableStateOf(false) }
-    var galleryHoveredIndex by remember { mutableStateOf<Int?>(null) }
-    var lightboxHoveredIndex by remember { mutableStateOf<Int?>(null) }
-
-    LaunchedEffect(slug) {
-        if (slug == null) {
-            project = null
-            projects = emptyList()
-            errorMessage = "Invalid project URL."
-            isLoading = false
-            galleryIndex = 0
-            galleryRailStart = 0
-            lightboxRailStart = 0
-            isGalleryLightboxOpen = false
-            galleryHoveredIndex = null
-            lightboxHoveredIndex = null
-            return@LaunchedEffect
-        }
-
-        isLoading = true
-        runCatching {
-            val allProjects = ProjectDataSource.repository.getAllProjects()
-            Pair(allProjects, allProjects.firstOrNull { it.slug == slug })
-        }.onSuccess { (allProjects, selected) ->
-            projects = allProjects
-            project = selected
-            errorMessage = null
-        }.onFailure {
-            projects = emptyList()
-            project = null
-            errorMessage = "Failed to load project details. Please refresh and try again."
-        }
-        isLoading = false
+    fun resetGalleryState() {
         galleryIndex = 0
         galleryRailStart = 0
         lightboxRailStart = 0
@@ -463,82 +440,99 @@ fun ProjectSlugPage() {
         galleryHoveredIndex = null
         lightboxHoveredIndex = null
     }
+}
+
+@Page("/projects/{slug}")
+@Layout(".components.layouts.PageLayout")
+@Composable
+fun ProjectSlugPage() {
+    val pageContext = rememberPageContext()
+    val slug = pageContext.route.params["slug"]
+
+    val state = remember { ProjectDetailState() }
+
+    LaunchedEffect(slug) {
+        if (slug == null) {
+            state.project = null
+            state.projects = emptyList()
+            state.errorMessage = "Invalid project URL."
+            state.isLoading = false
+            state.resetGalleryState()
+            return@LaunchedEffect
+        }
+
+        state.isLoading = true
+        runCatching {
+            val allProjects = ProjectDataSource.repository.getAllProjects()
+            Pair(allProjects, allProjects.firstOrNull { it.slug == slug })
+        }.onSuccess { (allProjects, selected) ->
+            state.projects = allProjects
+            state.project = selected
+            state.errorMessage = null
+        }.onFailure {
+            state.projects = emptyList()
+            state.project = null
+            state.errorMessage = "Failed to load project details. Please refresh and try again."
+        }
+        state.isLoading = false
+        state.resetGalleryState()
+    }
 
     val palette = ColorMode.current.toSitePalette()
 
     Column(ProjectPageStyle.toModifier()) {
         Row(ProjectTopNavStyle.toModifier()) {
-            ProjectNavLinkButton(
-                href = "/",
+            PrimaryButton(
                 text = "Back to homepage",
+                onClick = { pageContext.router.navigateTo("/") },
                 iconSrc = "/icons/chevron-left.svg",
                 iconFirst = true
             )
         }
 
         when {
-            isLoading -> {
-                Div(ProjectSectionStyle.toAttrs()) { SpanText("Loading project details...") }
+            state.isLoading -> {
+                ProjectSection {
+                    SpanText("Loading project details...")
+                }
             }
-            errorMessage != null -> {
-                Div(ProjectSectionStyle.toAttrs()) {
+            state.errorMessage != null -> {
+                ProjectSection {
                     Div(Modifier.color(palette.brand.lime).toAttrs()) {
-                        SpanText(errorMessage ?: "Failed to load project details.")
+                        SpanText(state.errorMessage ?: "Failed to load project details.")
                     }
                 }
             }
-            project == null -> {
-                Div(ProjectSectionStyle.toAttrs()) {
-                    Div(ProjectSectionHeadingStyle.toAttrs()) { SpanText("Project not found") }
+            state.project == null -> {
+                ProjectSection(heading = "Project not found") {
                     SpanText("The requested project slug does not exist.")
                 }
             }
             else -> {
-                val current = project!!
-                val currentIndex = projects.indexOfFirst { it.slug == current.slug }
-                val previous = if (currentIndex > 0) projects[currentIndex - 1] else null
-                val next = if (currentIndex >= 0 && currentIndex < projects.lastIndex) projects[currentIndex + 1] else null
+                val current = state.project!!
+                val currentIndex = state.projects.indexOfFirst { it.slug == current.slug }
+                val previous = if (currentIndex > 0) state.projects[currentIndex - 1] else null
+                val next = if (currentIndex >= 0 && currentIndex < state.projects.lastIndex) state.projects[currentIndex + 1] else null
 
-                Div(ProjectSectionStyle.toAttrs()) {
-                    Image(
-                        src = current.heroImageUrl,
-                        description = "${current.title} hero image",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(20.cssRem)
-                            .objectFit(ObjectFit.Cover)
-                            .borderRadius(1.cssRem)
-                            .display(DisplayStyle.Block)
-                    )
+                ProjectHero(
+                    title = current.title,
+                    description = current.shortDescription,
+                    heroImageUrl = current.heroImageUrl
+                )
 
-                    Div(Modifier.margin(top = 1.cssRem).toAttrs()) {
-                        Div(ProjectDetailTitleStyle.toAttrs()) { SpanText(current.title) }
-                        Div(Modifier.margin(top = 0.45.cssRem).opacity(0.85).toAttrs()) {
-                            SpanText(current.shortDescription)
-                        }
-                    }
-                }
-
-                Div(ProjectSectionStyle.toAttrs()) {
-                    Div(ProjectSectionHeadingStyle.toAttrs()) { SpanText("Overview") }
+                ProjectSection(heading = "Overview") {
                     Div(Modifier.opacity(0.95).toAttrs()) { SpanText(current.fullDescription) }
                 }
 
-                Div(ProjectSectionStyle.toAttrs()) {
-                    Div(ProjectSectionHeadingStyle.toAttrs()) { SpanText("Technology stack") }
+                ProjectSection(heading = "Technology stack") {
                     Row(Modifier.fillMaxWidth().flexWrap(FlexWrap.Wrap).gap(0.5.cssRem)) {
                         current.techStack.forEach { tech ->
-                            Div(TechChipGlowFrameStyle.toAttrs()) {
-                                Div(TechPillStyle.toModifier().then(MonoTagTextStyle.toModifier()).toAttrs()) {
-                                    SpanText(tech)
-                                }
-                            }
+                            TechTag(tech)
                         }
                     }
                 }
 
-                Div(ProjectSectionStyle.toAttrs()) {
-                    Div(ProjectSectionHeadingStyle.toAttrs()) { SpanText("Key features") }
+                ProjectSection(heading = "Key features") {
                     Ul {
                         current.features.forEach { feature ->
                             Li { SpanText(feature) }
@@ -546,18 +540,15 @@ fun ProjectSlugPage() {
                     }
                 }
 
-                Div(ProjectSectionStyle.toAttrs()) {
-                    Div(ProjectSectionHeadingStyle.toAttrs()) { SpanText("Gallery") }
+                ProjectSection(heading = "Gallery") {
                     if (current.galleryImages.isEmpty()) {
                         SpanText("No gallery images available.")
                     } else {
                         val imageCount = current.galleryImages.size
                         val railVisibleCount = 4
-                        val safeGalleryIndex = galleryIndex.coerceIn(0, imageCount - 1)
+                        val safeGalleryIndex = state.galleryIndex.coerceIn(0, imageCount - 1)
                         val maxRailStart = (imageCount - railVisibleCount).coerceAtLeast(0)
-                        val safeRailStart = galleryRailStart.coerceIn(0, maxRailStart)
-                        if (safeGalleryIndex != galleryIndex) galleryIndex = safeGalleryIndex
-                        if (safeRailStart != galleryRailStart) galleryRailStart = safeRailStart
+                        val safeRailStart = state.galleryRailStart.coerceIn(0, maxRailStart)
 
                         Box(GalleryRailViewportStyle.toModifier()) {
                             Row(
@@ -571,73 +562,22 @@ fun ProjectSlugPage() {
                                     .take(railVisibleCount)
                                     .forEachIndexed { offset, imageUrl ->
                                         val imageIndex = safeRailStart + offset
-                                        val isHovered = galleryHoveredIndex == imageIndex
-                                        val isSelected = false
-                                        Div(
-                                            attrs = {
-                                                attr(
-                                                    "style",
-                                                    css(
-                                                        "display: inline-block",
-                                                        "border-radius: 0.62rem",
-                                                        "filter: ${a1eWrapperGlow(isHovered, isSelected)}",
-                                                        "transition: filter 180ms ease, transform 180ms ease",
-                                                        if (isHovered) "transform: translateY(-2px)" else "transform: translateY(0px)",
-                                                    )
-                                                )
-                                                onMouseEnter { galleryHoveredIndex = imageIndex }
-                                                onMouseLeave {
-                                                    if (galleryHoveredIndex == imageIndex) {
-                                                        galleryHoveredIndex = null
-                                                    }
-                                                }
+                                        GalleryThumbnail(
+                                            imageUrl = imageUrl,
+                                            alt = "${current.title} gallery preview ${imageIndex + 1}",
+                                            ariaLabel = "Open screenshot ${imageIndex + 1}",
+                                            width = "7.3rem",
+                                            height = "12.8rem",
+                                            borderRadius = "0.62rem",
+                                            borderRadiusPx = 10,
+                                            estimatedWidthPx = 117,
+                                            estimatedHeightPx = 205,
+                                            isSelected = false,
+                                            onClick = {
+                                                state.galleryIndex = imageIndex
+                                                state.isGalleryLightboxOpen = true
                                             }
-                                        ) {
-                                            HtmlButton(
-                                                attrs = {
-                                                    attr("type", "button")
-                                                    attr("aria-label", "Open screenshot ${imageIndex + 1}")
-                                                    attr("style", baseThumbCss("7.3rem", "12.8rem", "0.62rem"))
-                                                    onClick {
-                                                        galleryIndex = imageIndex
-                                                        isGalleryLightboxOpen = true
-                                                    }
-                                                }
-                                            ) {
-                                                Img(
-                                                    src = imageUrl,
-                                                    alt = "${current.title} gallery preview ${imageIndex + 1}",
-                                                    attrs = {
-                                                        attr(
-                                                            "style",
-                                                            css(
-                                                                "width: 100%",
-                                                                "height: 100%",
-                                                                "display: block",
-                                                                "object-fit: cover",
-                                                            )
-                                                        )
-                                                    }
-                                                )
-                                                Div(
-                                                    attrs = {
-                                                        attr(
-                                                            "style",
-                                                            css(
-                                                                "position: absolute",
-                                                                "inset: 0",
-                                                                "width: 100%",
-                                                                "height: 100%",
-                                                                "pointer-events: none",
-                                                                "background-size: 100% 100%",
-                                                                "background-repeat: no-repeat",
-                                                                overlayBackgroundA1E(isHovered, isSelected, 10),
-                                                            )
-                                                        )
-                                                    }
-                                                ) {}
-                                            }
-                                        }
+                                        )
                                     }
                             }
 
@@ -651,21 +591,17 @@ fun ProjectSlugPage() {
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Div(GalleryArrowOutlineFrameStyle.toAttrs()) {
-                                        NavIconButton(
-                                            ariaLabel = "Scroll gallery left",
-                                            iconSrc = "/icons/chevron-left.svg",
-                                            onClick = { galleryRailStart = (safeRailStart - 1).coerceAtLeast(0) },
-                                            modifier = GalleryControlButtonStyle.toModifier().then(GalleryArrowButtonStyle.toModifier())
-                                        )
+                                    IconButton(
+                                        ariaLabel = "Scroll gallery left",
+                                        onClick = { state.galleryRailStart = (safeRailStart - 1).coerceAtLeast(0) }
+                                    ) {
+                                        SpanText("←")
                                     }
-                                    Div(GalleryArrowOutlineFrameStyle.toAttrs()) {
-                                        NavIconButton(
-                                            ariaLabel = "Scroll gallery right",
-                                            iconSrc = "/icons/chevron-right.svg",
-                                            onClick = { galleryRailStart = (safeRailStart + 1).coerceAtMost(maxRailStart) },
-                                            modifier = GalleryControlButtonStyle.toModifier().then(GalleryArrowButtonStyle.toModifier())
-                                        )
+                                    IconButton(
+                                        ariaLabel = "Scroll gallery right",
+                                        onClick = { state.galleryRailStart = (safeRailStart + 1).coerceAtMost(maxRailStart) }
+                                    ) {
+                                        SpanText("→")
                                     }
                                 }
                             }
@@ -675,14 +611,13 @@ fun ProjectSlugPage() {
                             SpanText("${safeGalleryIndex + 1} / $imageCount")
                         }
 
-                        if (isGalleryLightboxOpen) {
+                        if (state.isGalleryLightboxOpen) {
                             val lightboxRailVisibleCount = 8
                             val maxLightboxRailStart = (imageCount - lightboxRailVisibleCount).coerceAtLeast(0)
-                            val safeLightboxRailStart = lightboxRailStart.coerceIn(0, maxLightboxRailStart)
-                            if (safeLightboxRailStart != lightboxRailStart) lightboxRailStart = safeLightboxRailStart
+                            val safeLightboxRailStart = state.lightboxRailStart.coerceIn(0, maxLightboxRailStart)
 
                             Box(
-                                GalleryLightboxOverlayStyle.toModifier().onClick { isGalleryLightboxOpen = false },
+                                GalleryLightboxOverlayStyle.toModifier().onClick { state.isGalleryLightboxOpen = false },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Div(
@@ -696,13 +631,11 @@ fun ProjectSlugPage() {
                                         Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.End
                                     ) {
-                                        Div(GalleryArrowOutlineFrameStyle.toAttrs()) {
-                                            NavIconButton(
-                                                ariaLabel = "Close screenshot viewer",
-                                                iconSrc = "/icons/close.svg",
-                                                onClick = { isGalleryLightboxOpen = false },
-                                                modifier = GalleryControlButtonStyle.toModifier().then(GalleryArrowButtonStyle.toModifier())
-                                            )
+                                        IconButton(
+                                            ariaLabel = "Close screenshot viewer",
+                                            onClick = { state.isGalleryLightboxOpen = false }
+                                        ) {
+                                            SpanText("✕")
                                         }
                                     }
 
@@ -731,25 +664,21 @@ fun ProjectSlugPage() {
                                                     horizontalArrangement = Arrangement.SpaceBetween,
                                                     verticalAlignment = Alignment.CenterVertically
                                                 ) {
-                                                    Div(GalleryArrowOutlineFrameStyle.toAttrs()) {
-                                                        NavIconButton(
-                                                            ariaLabel = "Previous screenshot",
-                                                            iconSrc = "/icons/chevron-left.svg",
-                                                            onClick = {
-                                                                galleryIndex = if (safeGalleryIndex > 0) safeGalleryIndex - 1 else imageCount - 1
-                                                            },
-                                                            modifier = GalleryControlButtonStyle.toModifier().then(GalleryArrowButtonStyle.toModifier())
-                                                        )
+                                                    IconButton(
+                                                        ariaLabel = "Previous screenshot",
+                                                        onClick = {
+                                                            state.galleryIndex = if (safeGalleryIndex > 0) safeGalleryIndex - 1 else imageCount - 1
+                                                        }
+                                                    ) {
+                                                        SpanText("←")
                                                     }
-                                                    Div(GalleryArrowOutlineFrameStyle.toAttrs()) {
-                                                        NavIconButton(
-                                                            ariaLabel = "Next screenshot",
-                                                            iconSrc = "/icons/chevron-right.svg",
-                                                            onClick = {
-                                                                galleryIndex = if (safeGalleryIndex < imageCount - 1) safeGalleryIndex + 1 else 0
-                                                            },
-                                                            modifier = GalleryControlButtonStyle.toModifier().then(GalleryArrowButtonStyle.toModifier())
-                                                        )
+                                                    IconButton(
+                                                        ariaLabel = "Next screenshot",
+                                                        onClick = {
+                                                            state.galleryIndex = if (safeGalleryIndex < imageCount - 1) safeGalleryIndex + 1 else 0
+                                                        }
+                                                    ) {
+                                                        SpanText("→")
                                                     }
                                                 }
                                             }
@@ -771,70 +700,19 @@ fun ProjectSlugPage() {
                                                 .take(lightboxRailVisibleCount)
                                                 .forEachIndexed { offset, imageUrl ->
                                                     val imageIndex = safeLightboxRailStart + offset
-                                                    val isSelected = imageIndex == safeGalleryIndex
-                                                    val isHovered = lightboxHoveredIndex == imageIndex
-                                                    Div(
-                                                        attrs = {
-                                                            attr(
-                                                                "style",
-                                                                css(
-                                                                    "display: inline-block",
-                                                                    "border-radius: 0.5rem",
-                                                                    "filter: ${a1eWrapperGlow(isHovered, isSelected)}",
-                                                                    "transition: filter 180ms ease, transform 180ms ease",
-                                                                    if (isHovered) "transform: translateY(-2px)" else "transform: translateY(0px)",
-                                                                )
-                                                            )
-                                                            onMouseEnter { lightboxHoveredIndex = imageIndex }
-                                                            onMouseLeave {
-                                                                if (lightboxHoveredIndex == imageIndex) {
-                                                                    lightboxHoveredIndex = null
-                                                                }
-                                                            }
-                                                        }
-                                                    ) {
-                                                        HtmlButton(
-                                                            attrs = {
-                                                                attr("type", "button")
-                                                                attr("aria-label", "Select screenshot ${imageIndex + 1}")
-                                                                attr("style", baseThumbCss("3.2rem", "5.7rem", "0.5rem"))
-                                                                onClick { galleryIndex = imageIndex }
-                                                            }
-                                                        ) {
-                                                            Img(
-                                                                src = imageUrl,
-                                                                alt = "${current.title} screenshot thumbnail ${imageIndex + 1}",
-                                                                attrs = {
-                                                                    attr(
-                                                                        "style",
-                                                                        css(
-                                                                            "width: 100%",
-                                                                            "height: 100%",
-                                                                            "display: block",
-                                                                            "object-fit: cover",
-                                                                        )
-                                                                    )
-                                                                }
-                                                            )
-                                                            Div(
-                                                                attrs = {
-                                                                    attr(
-                                                                        "style",
-                                                                        css(
-                                                                            "position: absolute",
-                                                                            "inset: 0",
-                                                                            "width: 100%",
-                                                                            "height: 100%",
-                                                                            "pointer-events: none",
-                                                                            "background-size: 100% 100%",
-                                                                            "background-repeat: no-repeat",
-                                                                            overlayBackgroundA1E(isHovered, isSelected, 8),
-                                                                        )
-                                                                    )
-                                                                }
-                                                            ) {}
-                                                        }
-                                                    }
+                                                    GalleryThumbnail(
+                                                        imageUrl = imageUrl,
+                                                        alt = "${current.title} screenshot thumbnail ${imageIndex + 1}",
+                                                        ariaLabel = "Select screenshot ${imageIndex + 1}",
+                                                        width = "3.2rem",
+                                                        height = "5.7rem",
+                                                        borderRadius = "0.5rem",
+                                                        borderRadiusPx = 8,
+                                                        estimatedWidthPx = 51,
+                                                        estimatedHeightPx = 91,
+                                                        isSelected = imageIndex == safeGalleryIndex,
+                                                        onClick = { state.galleryIndex = imageIndex }
+                                                    )
                                                 }
                                         }
 
@@ -848,27 +726,21 @@ fun ProjectSlugPage() {
                                                 horizontalArrangement = Arrangement.SpaceBetween,
                                                 verticalAlignment = Alignment.CenterVertically
                                             ) {
-                                                Div(GalleryArrowOutlineFrameStyle.toAttrs()) {
-                                                    NavIconButton(
-                                                        ariaLabel = "Scroll thumbnails left",
-                                                        iconSrc = "/icons/chevron-left.svg",
-                                                        onClick = {
-                                                            lightboxRailStart =
-                                                                (safeLightboxRailStart - 1).coerceAtLeast(0)
-                                                        },
-                                                        modifier = GalleryControlButtonStyle.toModifier().then(GalleryArrowButtonStyle.toModifier())
-                                                    )
+                                                IconButton(
+                                                    ariaLabel = "Scroll thumbnails left",
+                                                    onClick = {
+                                                        state.lightboxRailStart = (safeLightboxRailStart - 1).coerceAtLeast(0)
+                                                    }
+                                                ) {
+                                                    SpanText("←")
                                                 }
-                                                Div(GalleryArrowOutlineFrameStyle.toAttrs()) {
-                                                    NavIconButton(
-                                                        ariaLabel = "Scroll thumbnails right",
-                                                        iconSrc = "/icons/chevron-right.svg",
-                                                        onClick = {
-                                                            lightboxRailStart =
-                                                                (safeLightboxRailStart + 1).coerceAtMost(maxLightboxRailStart)
-                                                        },
-                                                        modifier = GalleryControlButtonStyle.toModifier().then(GalleryArrowButtonStyle.toModifier())
-                                                    )
+                                                IconButton(
+                                                    ariaLabel = "Scroll thumbnails right",
+                                                    onClick = {
+                                                        state.lightboxRailStart = (safeLightboxRailStart + 1).coerceAtMost(maxLightboxRailStart)
+                                                    }
+                                                ) {
+                                                    SpanText("→")
                                                 }
                                             }
                                         }
@@ -888,43 +760,39 @@ fun ProjectSlugPage() {
                 )
 
                 if (links.isNotEmpty()) {
-                    Div(ProjectSectionStyle.toAttrs()) {
-                        Div(ProjectSectionHeadingStyle.toAttrs()) { SpanText("Project links") }
+                    ProjectSection(heading = "Project links") {
                         Row(Modifier.fillMaxWidth().flexWrap(FlexWrap.Wrap).gap(0.6.cssRem)) {
                             links.forEach { (label, url) ->
-                                Link(
-                                    url,
-                                    label,
-                                    ProjectActionLinkStyle.toModifier(),
-                                    variant = UndecoratedLinkVariant.then(UncoloredLinkVariant),
+                                SecondaryButton(
+                                    text = label,
+                                    onClick = { window.open(url, "_blank") }
                                 )
                             }
                         }
                     }
                 }
 
-                    Div(ProjectSectionStyle.toAttrs()) {
-                        Div(ProjectSectionHeadingStyle.toAttrs()) { SpanText("More projects") }
-                        Row(Modifier.fillMaxWidth().gap(1.cssRem)) {
-                            if (previous != null) {
-                                ProjectNavLinkButton(
-                                    href = "/projects/${previous.slug}",
-                                    text = previous.title,
-                                    iconSrc = "/icons/chevron-left.svg",
-                                    iconFirst = true
-                                )
-                            }
-                            Spacer()
-                            if (next != null) {
-                                ProjectNavLinkButton(
-                                    href = "/projects/${next.slug}",
-                                    text = next.title,
-                                    iconSrc = "/icons/chevron-right.svg",
-                                    iconFirst = false
-                                )
-                            }
+                ProjectSection(heading = "More projects") {
+                    Row(Modifier.fillMaxWidth().gap(1.cssRem)) {
+                        if (previous != null) {
+                            PrimaryButton(
+                                text = previous.title,
+                                onClick = { pageContext.router.navigateTo("/projects/${previous.slug}") },
+                                iconSrc = "/icons/chevron-left.svg",
+                                iconFirst = true
+                            )
+                        }
+                        Spacer()
+                        if (next != null) {
+                            PrimaryButton(
+                                text = next.title,
+                                onClick = { pageContext.router.navigateTo("/projects/${next.slug}") },
+                                iconSrc = "/icons/chevron-right.svg",
+                                iconFirst = false
+                            )
                         }
                     }
+                }
             }
         }
     }

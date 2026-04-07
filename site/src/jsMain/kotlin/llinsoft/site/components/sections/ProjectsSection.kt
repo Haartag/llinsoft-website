@@ -40,7 +40,7 @@ val ProjectsGridStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
-            .gap(1.cssRem)
+            .gap(0.9.cssRem)
             .grid {
                 columns { repeat(1) { size(1.fr) } }
             }
@@ -60,18 +60,23 @@ fun ProjectsSection(
 ) {
     val palette = ColorMode.current.toSitePalette()
 
-    Div(Modifier.fillMaxWidth().margin(top = 2.8.cssRem).toAttrs()) {
+    Div(Modifier.fillMaxWidth().margin(top = 2.52.cssRem).toAttrs()) {
         Div(ProjectsTitleStyle.toAttrs()) { SpanText("Selected Projects") }
-        Div(ProjectsSubtitleStyle.toAttrs()) {
-            SpanText("Production-ready work across Kotlin Multiplatform, backend, and web.")
-        }
 
         when {
-            isLoading -> Div(Modifier.margin(top = 1.cssRem).opacity(0.8).toAttrs()) { SpanText("Loading projects...") }
-            errorMessage != null -> Div(Modifier.margin(top = 1.cssRem).opacity(0.8).color(palette.brand.lime).toAttrs()) { SpanText(errorMessage) }
-            projects.isEmpty() -> Div(Modifier.margin(top = 1.cssRem).opacity(0.8).toAttrs()) { SpanText("No projects to display yet.") }
+            isLoading -> Div(Modifier.margin(top = 0.9.cssRem).opacity(0.8).toAttrs()) { SpanText("Loading projects...") }
+            errorMessage != null -> Div(Modifier.margin(top = 0.9.cssRem).opacity(0.8).color(palette.brand.lime).toAttrs()) { SpanText(errorMessage) }
+            projects.isEmpty() -> Div(Modifier.margin(top = 0.9.cssRem).opacity(0.8).toAttrs()) { SpanText("No projects to display yet.") }
             else -> {
-                Div(ProjectsGridStyle.toModifier().margin(top = 1.35.cssRem).toAttrs()) {
+                Div(
+                    ProjectsGridStyle.toModifier()
+                        .margin(top = 1.22.cssRem)
+                        .toAttrs {
+                            style {
+                                property("max-width", "1350px")
+                            }
+                        }
+                ) {
                     projects.forEach { project ->
                         ProjectCard(project)
                     }
