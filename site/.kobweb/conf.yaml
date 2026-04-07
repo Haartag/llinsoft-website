@@ -12,3 +12,15 @@ server:
       siteRoot: ".kobweb/site"
 
   port: 8080
+
+export:
+  routes:
+    - /projects/zakroma-storage-app
+    - /projects/heroes-helper-h3
+    - /projects/openai-chat-app
+    - /projects/http-requester-pro
+    - /projects/server-monitoring-alerts
+    - /projects/ebay-order-management
+    - /projects/property-management-solution
+    - /projects/language-pronunciation-app
+    - /projects/portfolio-compose-web
