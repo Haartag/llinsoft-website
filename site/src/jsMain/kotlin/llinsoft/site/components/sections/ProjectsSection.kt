@@ -40,7 +40,7 @@ val ProjectsGridStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
-            .gap(0.9.cssRem)
+            .gap(1.5.cssRem)
             .grid {
                 columns { repeat(1) { size(1.fr) } }
             }
