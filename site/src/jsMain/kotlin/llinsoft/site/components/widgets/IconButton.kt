@@ -164,6 +164,10 @@ fun IconButton(
                         property("display", "flex")
                         property("align-items", "center")
                         property("justify-content", "center")
+                        property("-webkit-appearance", "none")
+                        property("font-size", "1.1rem")
+                        property("line-height", "1")
+                        property("font-family", "Inter, Roboto, Segoe UI, Helvetica Neue, Arial, sans-serif")
                     }
                     onClick { onClick() }
                     onMouseDown { pressed = true }
