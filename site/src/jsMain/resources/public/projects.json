@@ -224,29 +224,32 @@
     "order": 8
   },
   {
-    "id": "portfolio-website-compose",
-    "slug": "portfolio-compose-web",
+    "id": "portfolio-website-kobweb",
+    "slug": "portfolio-kobweb",
     "title": "...and this website!",
-    "shortDescription": "Simple portfolio website on Kotlin + Compose Web",
-    "fullDescription": "A website made entirely in Kotlin, using the Compose Web. A little ugly, but hey, all in Kotlin! This project demonstrates the power of Kotlin Multiplatform for web development using Compose for Web framework.",
-    "techStack": ["Kotlin Multiplatform", "Compose Web", "KMDC"],
-    "featuredTech": ["Kotlin Multiplatform", "Compose Web", "KMDC"],
+    "shortDescription": "This portfolio - built entirely in Kotlin with Kobweb and Compose for Web.",
+    "fullDescription": "A production-ready portfolio website written entirely in Kotlin using Kobweb and Compose for Web. The site features a dynamic project system driven by a JSON data source, a custom SVG-based polygon border design, dark/light mode, smooth hover animations, a lightbox gallery for project detail pages, and a fully responsive layout. No HTML, no CSS files - everything from routing to styling is expressed in pure Kotlin.",
+    "techStack": ["Kotlin", "Kobweb", "Compose for Web", "Kotlin Multiplatform", "CSS-in-Kotlin", "JSON"],
+    "featuredTech": ["Kobweb", "Compose for Web", "Kotlin Multiplatform"],
     "features": [
-      "Pure Kotlin web application",
-      "Compose for Web framework",
-      "Multiplatform capabilities",
-      "Material Design components"
+      "Pure Kotlin - no HTML or CSS files",
+      "Dynamic project pages driven by JSON data source",
+      "Custom SVG polygon border design system",
+      "Dark/light mode with persistent toggle",
+      "Lightbox gallery on project detail pages",
+      "Fully responsive layout for mobile and desktop"
     ],
     "thumbnailUrl": "/images/projects/web-thumb.png",
     "heroImageUrl": "/images/projects/web-hero.png",
     "galleryImages": [
-      "/images/projects/web-screen1.png",
-      "/images/projects/web-screen2.png"
+      "/images/projects/portfolio-screen1.png",
+      "/images/projects/portfolio-screen2.png",
+      "/images/projects/portfolio-screen3.png"
     ],
     "links": {
-      "github": "https://github.com/Haartag/PortfolioWebsite"
+      "github": "https://github.com/Haartag/llinsoft-website"
     },
-    "date": "2022-12",
+    "date": "2025-04",
     "order": 9
   }
 ]
