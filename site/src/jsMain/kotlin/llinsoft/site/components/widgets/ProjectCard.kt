@@ -143,7 +143,8 @@ fun ProjectCard(
 
     Column(
         Modifier
-            .width(550.px)
+            .fillMaxWidth()
+            .maxWidth(550.px)
             .height(400.px)
     ) {
         Div(
@@ -163,8 +164,8 @@ fun ProjectCard(
                     }
                 }
         ) {
-            Link("/projects/${project.slug}", Modifier.fillMaxWidth(), UndecoratedLinkVariant.then(UncoloredLinkVariant)) {
-                Column(ProjectCardInnerStyle.toModifier()) {
+            Link("/projects/${project.slug}", Modifier.fillMaxWidth().fillMaxHeight(), UndecoratedLinkVariant.then(UncoloredLinkVariant)) {
+                Column(ProjectCardInnerStyle.toModifier().then(Modifier.fillMaxSize())) {
                     Image(
                         src = project.thumbnailUrl,
                         description = "${project.title} thumbnail",
@@ -175,25 +176,46 @@ fun ProjectCard(
                             .display(DisplayStyle.Block)
                     )
 
-                    Column(Modifier.padding(1.cssRem).gap(0.7.cssRem)) {
-                        Div(ProjectTitleStyle.toAttrs()) { SpanText(project.title) }
-                        Div(
-                            ProjectDescStyle.toModifier().toAttrs {
+                    Div(
+                        attrs = Modifier
+                            .fillMaxWidth()
+                            .padding(1.cssRem)
+                            .toAttrs {
                                 style {
-                                    property("display", "-webkit-box")
-                                    property("-webkit-line-clamp", "2")
-                                    property("-webkit-box-orient", "vertical")
-                                    property("overflow", "hidden")
-                                    property("word-break", "break-word")
-                                    property("overflow-wrap", "break-word")
-                                    property("white-space", "normal")
-                                    property("min-width", "0")
-                                    property("height", "2.85rem")
+                                    property("display", "flex")
+                                    property("flex-direction", "column")
+                                    property("justify-content", "space-between")
+                                    property("flex", "1 1 auto")
+                                    property("min-height", "0")
                                 }
                             }
-                        ) { SpanText(project.shortDescription) }
+                    ) {
+                        Column(Modifier.gap(0.7.cssRem)) {
+                            Div(ProjectTitleStyle.toAttrs()) { SpanText(project.title) }
+                            Div(
+                                ProjectDescStyle.toModifier().toAttrs {
+                                    style {
+                                        property("display", "-webkit-box")
+                                        property("-webkit-line-clamp", "2")
+                                        property("-webkit-box-orient", "vertical")
+                                        property("overflow", "hidden")
+                                        property("word-break", "break-word")
+                                        property("overflow-wrap", "break-word")
+                                        property("white-space", "normal")
+                                        property("min-width", "0")
+                                        property("height", "2.85rem")
+                                    }
+                                }
+                            ) { SpanText(project.shortDescription) }
+                        }
 
-                        Row(Modifier.fillMaxWidth().gap(0.45.cssRem).margin(top = 0.2.cssRem, bottom = 1.cssRem)) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .gap(0.45.cssRem)
+                                .flexWrap(FlexWrap.Wrap)
+                                .margin(top = 0.2.cssRem, bottom = 1.cssRem)
+                        ) {
                             project.featuredTech.forEach { tech ->
                                 TechTag(tech)
                             }

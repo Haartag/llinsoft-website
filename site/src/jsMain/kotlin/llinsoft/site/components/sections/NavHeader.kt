@@ -10,13 +10,8 @@ import com.varabyte.kobweb.compose.ui.modifiers.borderBottom
 import com.varabyte.kobweb.compose.ui.modifiers.display
 import com.varabyte.kobweb.compose.ui.modifiers.fillMaxWidth
 import com.varabyte.kobweb.compose.ui.modifiers.height
-import com.varabyte.kobweb.compose.ui.modifiers.left
 import com.varabyte.kobweb.compose.ui.modifiers.objectFit
 import com.varabyte.kobweb.compose.ui.modifiers.padding
-import com.varabyte.kobweb.compose.ui.modifiers.position
-import com.varabyte.kobweb.compose.ui.modifiers.right
-import com.varabyte.kobweb.compose.ui.modifiers.top
-import com.varabyte.kobweb.compose.ui.modifiers.zIndex
 import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.navigation.Link
 import com.varabyte.kobweb.silk.style.CssStyle
@@ -25,7 +20,6 @@ import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
 import com.varabyte.kobweb.silk.style.toModifier
 import llinsoft.site.toSitePalette
 import org.jetbrains.compose.web.css.DisplayStyle
-import org.jetbrains.compose.web.css.Position
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.css.px
 
@@ -33,17 +27,15 @@ val NavHeaderStyle = CssStyle {
     base {
         Modifier
             .fillMaxWidth()
-            .position(Position.Fixed)
-            .top(0.px)
-            .left(0.px)
-            .right(0.px)
-            .padding(topBottom = 0.9.cssRem, leftRight = 1.cssRem)
+            .height(3.cssRem)
+            .padding(leftRight = 1.cssRem)
             .backgroundColor(colorMode.toSitePalette().surface)
             .borderBottom(width = 1.px, color = colorMode.toSitePalette().border)
-            .zIndex(20)
     }
     Breakpoint.MD {
-        Modifier.padding(leftRight = 2.cssRem)
+        Modifier
+            .height(3.cssRem)
+            .padding(leftRight = 2.cssRem)
     }
 }
 
@@ -58,7 +50,7 @@ fun NavHeader() {
                 src = "/logo.jpg",
                 description = "Site logo",
                 modifier = Modifier
-                    .height(2.4.cssRem)
+                    .height(3.cssRem)
                     .objectFit(ObjectFit.Contain)
                     .display(DisplayStyle.Block)
             )

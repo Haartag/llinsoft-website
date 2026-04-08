@@ -14,6 +14,9 @@ import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
+import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
 import com.varabyte.kobweb.silk.style.toAttrs
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
@@ -27,47 +30,77 @@ import org.jetbrains.compose.web.dom.Div
 /**
  * Style for hero name
  */
-val HeroNameStyle = CssStyle.base {
-    Modifier
-        .fontSize(2.2.cssRem)
-        .fontWeight(700)
-        .lineHeight(1.1)
-        .margin(bottom = 0.35.cssRem)
+val HeroNameStyle = CssStyle {
+    base {
+        Modifier
+            .fontSize(2.cssRem)
+            .fontWeight(700)
+            .lineHeight(1.1)
+            .margin(bottom = 0.3.cssRem)
+    }
+    Breakpoint.MD {
+        Modifier
+            .fontSize(2.2.cssRem)
+            .margin(bottom = 0.35.cssRem)
+    }
 }
 
 /**
  * Style for hero role label (metadata)
  */
-val HeroRoleStyle = CssStyle.base {
-    Modifier
-        .fontSize(0.8.cssRem)
-        .fontWeight(500)
-        .color(colorMode.toSitePalette().brand.cyan)
-        .opacity(0.8)
-        .margin(bottom = 3.24.cssRem)
+val HeroRoleStyle = CssStyle {
+    base {
+        Modifier
+            .fontSize(0.75.cssRem)
+            .fontWeight(500)
+            .color(colorMode.toSitePalette().brand.cyan)
+            .opacity(0.8)
+            .margin(bottom = 1.6.cssRem)
+    }
+    Breakpoint.MD {
+        Modifier
+            .fontSize(0.8.cssRem)
+            .margin(bottom = 3.24.cssRem)
+    }
 }
 
 /**
  * Style for hero headline (main message)
  */
-val HeroHeadlineStyle = CssStyle.base {
-    Modifier
-        .fontSize(1.83.cssRem)
-        .fontWeight(700)
-        .lineHeight(1.1)
-        .margin(bottom = 1.98.cssRem)
+val HeroHeadlineStyle = CssStyle {
+    base {
+        Modifier
+            .fontSize(1.5.cssRem)
+            .fontWeight(700)
+            .lineHeight(1.15)
+            .margin(bottom = 1.4.cssRem)
+    }
+    Breakpoint.MD {
+        Modifier
+            .fontSize(1.83.cssRem)
+            .lineHeight(1.1)
+            .margin(bottom = 1.98.cssRem)
+    }
 }
 
 /**
  * Style for hero support line (subtitle)
  */
-val HeroSupportLineStyle = CssStyle.base {
-    Modifier
-        .fontSize(1.02.cssRem)
-        .lineHeight(1.6)
-        .opacity(0.7)
-        .maxWidth(42.cssRem)
-        .margin(bottom = 2.34.cssRem)
+val HeroSupportLineStyle = CssStyle {
+    base {
+        Modifier
+            .fontSize(0.98.cssRem)
+            .lineHeight(1.6)
+            .opacity(0.7)
+            .maxWidth(32.cssRem)
+            .margin(bottom = 1.6.cssRem)
+    }
+    Breakpoint.MD {
+        Modifier
+            .fontSize(1.02.cssRem)
+            .maxWidth(42.cssRem)
+            .margin(bottom = 2.34.cssRem)
+    }
 }
 
 /**
@@ -92,6 +125,14 @@ val ProofChipStyle = CssStyle.base {
         .color(colorMode.toSitePalette().brand.lime)
 }
 
+val HeroAvatarShellStyle = CssStyle.base {
+    Modifier
+        .padding(2.px)
+        .backgroundColor(colorMode.toSitePalette().brand.cyan)
+        .borderRadius(50.percent)
+        .display(DisplayStyle.InlineBlock)
+}
+
 /**
  * Hero Section - Modern hero with photo, headline, tech tags, and view control
  *
@@ -106,88 +147,112 @@ fun HeroSection(
     val palette = ColorMode.current.toSitePalette()
     val bio = HomepageBioData.content
 
+    val avatarContent: @Composable (String) -> Unit = { sizeCss ->
+        Div(
+            attrs = HeroAvatarShellStyle.toModifier().toAttrs {
+                style {
+                    property("width", "calc($sizeCss + 4px)")
+                    property("height", "calc($sizeCss + 4px)")
+                    property("display", "inline-flex")
+                    property("align-items", "center")
+                    property("justify-content", "center")
+                    property("flex-shrink", "0")
+                }
+            }
+        ) {
+            Image(
+                bio.primaryPhotoUrl,
+                "${bio.name} profile",
+                Modifier
+                    .fillMaxSize()
+                    .borderRadius(50.percent)
+                    .objectFit(ObjectFit.Cover)
+                    .display(DisplayStyle.Block)
+            )
+        }
+    }
+
+    val textContent: @Composable () -> Unit = {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .gap(0.px)
+        ) {
+            // Name (one line)
+            Div(HeroNameStyle.toAttrs()) {
+                SpanText("Valeriy ")
+                Div(
+                    Modifier
+                        .color(palette.brand.cyan)
+                        .display(DisplayStyle.Inline)
+                        .toAttrs()
+                ) {
+                    SpanText("Timofeev")
+                }
+            }
+
+            // Role label (metadata style)
+            Div(HeroRoleStyle.toAttrs()) {
+                SpanText(bio.role.uppercase())
+            }
+
+            // Headline
+            Div(HeroHeadlineStyle.toAttrs()) {
+                SpanText("I build cross-platform mobile products with Kotlin Multiplatform.")
+            }
+
+            // Support Line
+            Div(HeroSupportLineStyle.toAttrs()) {
+                SpanText("With clean architecture, reliable API and backend integration, and careful attention to user experience.")
+            }
+
+            // Tech Tags - Supporting detail
+            Row(
+                Modifier
+                    .gap(0.75.cssRem)
+                    .flexWrap(FlexWrap.Wrap)
+                    .margin(bottom = 1.56.cssRem)
+            ) {
+                TechTag("Kotlin Multiplatform")
+                TechTag("Android")
+                TechTag("APIs")
+                TechTag("Backend Integration")
+                TechTag("Clean Architecture")
+            }
+        }
+    }
+
     Column(Modifier.fillMaxWidth().gap(0.px)) {
         Div(
             Modifier
                 .fillMaxWidth()
                 .padding(topBottom = 3.6.cssRem, leftRight = 1.cssRem)
+                .maxWidth(72.cssRem)
                 .toAttrs {
                     style {
-                        property("display", "grid")
-                        property("grid-template-columns", "auto 1fr")
-                        property("gap", "1.8rem")
-                        property("max-width", "72rem")
                         property("margin", "0 auto")
-                        property("align-items", "start")
                     }
                 }
         ) {
-            // Left Column: Avatar with cyan border ring
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .padding(2.px) // Border thickness
-                    .backgroundColor(palette.brand.cyan) // Border color
-                    .borderRadius(50.percent)
-            ) {
-                Image(
-                    bio.primaryPhotoUrl,
-                    "${bio.name} profile",
-                    Modifier
-                        .size(13.2.cssRem)
-                        .borderRadius(50.percent)
-                        .objectFit(ObjectFit.Cover)
-                        .display(DisplayStyle.Block)
-                )
-            }
-
-            // Right Column: All text content with shared left edge
             Column(
                 Modifier
                     .fillMaxWidth()
-                    .gap(0.px)
+                    .gap(1.35.cssRem)
+                    .displayUntil(Breakpoint.MD)
             ) {
-                // Name (one line)
-                Div(HeroNameStyle.toAttrs()) {
-                    SpanText("Valeriy ")
-                    Div(
-                        Modifier
-                            .color(palette.brand.cyan)
-                            .display(DisplayStyle.Inline)
-                            .toAttrs()
-                    ) {
-                        SpanText("Timofeev")
-                    }
-                }
+                avatarContent("clamp(9rem, 26vw, 10.5rem)")
+                textContent()
+            }
 
-                // Role label (metadata style)
-                Div(HeroRoleStyle.toAttrs()) {
-                    SpanText(bio.role.uppercase())
-                }
-
-                // Headline
-                Div(HeroHeadlineStyle.toAttrs()) {
-                    SpanText("I build cross-platform mobile products with Kotlin Multiplatform.")
-                }
-
-                // Support Line
-                Div(HeroSupportLineStyle.toAttrs()) {
-                    SpanText("With clean architecture, reliable API and backend integration, and careful attention to user experience.")
-                }
-
-                // Tech Tags - Supporting detail
-                Row(
-                    Modifier
-                        .gap(0.75.cssRem)
-                        .flexWrap(FlexWrap.Wrap)
-                        .margin(bottom = 1.56.cssRem)
-                ) {
-                    TechTag("Kotlin Multiplatform")
-                    TechTag("Android")
-                    TechTag("APIs")
-                    TechTag("Backend Integration")
-                    TechTag("Clean Architecture")
-                }
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .gap(1.8.cssRem)
+                    .displayIfAtLeast(Breakpoint.MD),
+                verticalAlignment = Alignment.Top
+            ) {
+                avatarContent("13.2rem")
+                textContent()
             }
         }
 

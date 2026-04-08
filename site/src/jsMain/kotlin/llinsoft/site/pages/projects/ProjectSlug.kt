@@ -32,6 +32,9 @@ import kotlinx.browser.window
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
+import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
 import com.varabyte.kobweb.silk.style.toModifier
 import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import llinsoft.site.components.layouts.PageLayoutData
@@ -47,7 +50,10 @@ import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Ul
 
 val ProjectPageStyle = CssStyle.base {
-    Modifier.fillMaxWidth().gap(1.25.cssRem)
+    Modifier
+        .fillMaxWidth()
+        .gap(1.25.cssRem)
+        .margin(top = 1.25.cssRem)
 }
 
 val ProjectTopNavStyle = CssStyle.base {
@@ -248,7 +254,37 @@ fun ProjectSlugPage() {
                 }
 
                 ProjectSection(heading = "More projects") {
-                    Row(Modifier.fillMaxWidth().gap(1.cssRem)) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .gap(0.8.cssRem)
+                            .displayUntil(Breakpoint.MD)
+                    ) {
+                        if (previous != null) {
+                            PrimaryButton(
+                                text = previous.title,
+                                onClick = { pageContext.router.navigateTo("/projects/${previous.slug}") },
+                                iconSrc = "/icons/chevron-left.svg",
+                                iconFirst = true
+                            )
+                        }
+                        Spacer()
+                        if (next != null) {
+                            PrimaryButton(
+                                text = next.title,
+                                onClick = { pageContext.router.navigateTo("/projects/${next.slug}") },
+                                iconSrc = "/icons/chevron-right.svg",
+                                iconFirst = false
+                            )
+                        }
+                    }
+
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .gap(1.cssRem)
+                            .displayIfAtLeast(Breakpoint.MD)
+                    ) {
                         if (previous != null) {
                             PrimaryButton(
                                 text = previous.title,
