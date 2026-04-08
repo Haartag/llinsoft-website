@@ -47,7 +47,10 @@ import org.jetbrains.compose.web.dom.Li
 import org.jetbrains.compose.web.dom.Ul
 
 val ProjectPageStyle = CssStyle.base {
-    Modifier.fillMaxWidth().gap(1.25.cssRem)
+    Modifier
+        .fillMaxWidth()
+        .gap(1.25.cssRem)
+        .margin(top = 1.25.cssRem)
 }
 
 val ProjectTopNavStyle = CssStyle.base {
