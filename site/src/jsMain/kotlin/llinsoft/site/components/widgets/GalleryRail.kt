@@ -11,6 +11,9 @@ import com.varabyte.kobweb.compose.ui.toAttrs
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
+import com.varabyte.kobweb.silk.style.breakpoint.Breakpoint
+import com.varabyte.kobweb.silk.style.breakpoint.displayIfAtLeast
+import com.varabyte.kobweb.silk.style.breakpoint.displayUntil
 import com.varabyte.kobweb.silk.style.toModifier
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
@@ -57,21 +60,29 @@ fun GalleryRail(
     val safeRailStart = galleryState.railStart.coerceIn(0, maxRailStart)
 
     Box(GalleryRailViewportStyle.toModifier()) {
-        Row(
-            Modifier
+        // Mobile: free horizontal scroll with all thumbnails
+        Div(
+            attrs = Modifier
                 .fillMaxWidth()
-                .gap(0.62.cssRem)
-                .padding(leftRight = if (maxRailStart > 0) 2.9.cssRem else 0.cssRem)
+                .displayUntil(Breakpoint.MD)
+                .toAttrs {
+                    style {
+                        property("overflow-x", "auto")
+                        property("scroll-snap-type", "x mandatory")
+                        property("-webkit-overflow-scrolling", "touch")
+                    }
+                }
         ) {
-            images
-                .drop(safeRailStart)
-                .take(visibleCount)
-                .forEachIndexed { offset, imageUrl ->
-                    val imageIndex = safeRailStart + offset
+            Row(
+                Modifier
+                    .gap(0.62.cssRem)
+                    .padding(leftRight = 0.2.cssRem)
+            ) {
+                images.forEachIndexed { index, imageUrl ->
                     GalleryThumbnail(
                         imageUrl = imageUrl,
-                        alt = "$projectTitle gallery preview ${imageIndex + 1}",
-                        ariaLabel = "Open screenshot ${imageIndex + 1}",
+                        alt = "$projectTitle gallery preview ${index + 1}",
+                        ariaLabel = "Open screenshot ${index + 1}",
                         width = "7.3rem",
                         height = "12.8rem",
                         borderRadius = "0.62rem",
@@ -79,46 +90,75 @@ fun GalleryRail(
                         estimatedWidthPx = 117,
                         estimatedHeightPx = 205,
                         isSelected = false,
-                        onClick = { onThumbnailClick(imageIndex) }
+                        onClick = { onThumbnailClick(index) }
                     )
                 }
+            }
         }
 
-        if (maxRailStart > 0) {
+        // Desktop/tablet: existing rail + arrows
+        Div(attrs = Modifier.fillMaxWidth().displayIfAtLeast(Breakpoint.MD).toAttrs()) {
             Row(
                 Modifier
                     .fillMaxWidth()
-                    .position(Position.Absolute)
-                    .top(0.px)
-                    .bottom(0.px),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .gap(0.62.cssRem)
+                    .padding(leftRight = if (maxRailStart > 0) 2.9.cssRem else 0.cssRem)
             ) {
-                IconButton(
-                    ariaLabel = "Scroll gallery left",
-                    onClick = {
-                        onGalleryStateChange(
-                            galleryState.withRailStart((safeRailStart - 1).coerceAtLeast(0))
+                images
+                    .drop(safeRailStart)
+                    .take(visibleCount)
+                    .forEachIndexed { offset, imageUrl ->
+                        val imageIndex = safeRailStart + offset
+                        GalleryThumbnail(
+                            imageUrl = imageUrl,
+                            alt = "$projectTitle gallery preview ${imageIndex + 1}",
+                            ariaLabel = "Open screenshot ${imageIndex + 1}",
+                            width = "7.3rem",
+                            height = "12.8rem",
+                            borderRadius = "0.62rem",
+                            borderRadiusPx = 10,
+                            estimatedWidthPx = 117,
+                            estimatedHeightPx = 205,
+                            isSelected = false,
+                            onClick = { onThumbnailClick(imageIndex) }
                         )
                     }
+            }
+
+            if (maxRailStart > 0) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .position(Position.Absolute)
+                        .top(0.px)
+                        .bottom(0.px),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    SpanText("←")
-                }
-                IconButton(
-                    ariaLabel = "Scroll gallery right",
-                    onClick = {
-                        onGalleryStateChange(
-                            galleryState.withRailStart((safeRailStart + 1).coerceAtMost(maxRailStart))
-                        )
+                    IconButton(
+                        ariaLabel = "Scroll gallery left",
+                        onClick = {
+                            onGalleryStateChange(
+                                galleryState.withRailStart((safeRailStart - 1).coerceAtLeast(0))
+                            )
+                        }
+                    ) {
+                        SpanText("←")
                     }
-                ) {
-                    SpanText("→")
+                    IconButton(
+                        ariaLabel = "Scroll gallery right",
+                        onClick = {
+                            onGalleryStateChange(
+                                galleryState.withRailStart((safeRailStart + 1).coerceAtMost(maxRailStart))
+                            )
+                        }
+                    ) {
+                        SpanText("→")
+                    }
                 }
             }
         }
     }
 
-    Div(Modifier.margin(top = 0.62.cssRem).opacity(0.8).toAttrs()) {
-        SpanText("${galleryState.selectedIndex + 1} / $imageCount")
-    }
+    // Counter removed per design update.
 }
