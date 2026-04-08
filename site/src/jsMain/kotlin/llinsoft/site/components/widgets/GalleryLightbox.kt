@@ -19,6 +19,8 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import llinsoft.site.toSitePalette
 import org.jetbrains.compose.web.css.*
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Span
+import org.jetbrains.compose.web.dom.Text
 
 val GalleryLightboxOverlayStyle = CssStyle.base {
     Modifier
@@ -157,7 +159,7 @@ fun GalleryLightbox(
                                         onGalleryStateChange(galleryState.withSelectedIndex(newIndex))
                                     }
                                 ) {
-                                    SpanText("←")
+                                    Span(attrs = { style { property("transform", "translateY(-2px)"); property("display", "inline-block") } }) { Text("←") }
                                 }
                                 IconButton(
                                     ariaLabel = "Next screenshot",
@@ -169,7 +171,7 @@ fun GalleryLightbox(
                                         onGalleryStateChange(galleryState.withSelectedIndex(newIndex))
                                     }
                                 ) {
-                                    SpanText("→")
+                                    Span(attrs = { style { property("transform", "translateY(-2px)"); property("display", "inline-block") } }) { Text("→") }
                                 }
                             }
                         }
@@ -231,7 +233,7 @@ fun GalleryLightbox(
                                     )
                                 }
                             ) {
-                                SpanText("←")
+                                Span(attrs = { style { property("transform", "translateY(-2px)"); property("display", "inline-block") } }) { Text("←") }
                             }
                             IconButton(
                                 ariaLabel = "Scroll thumbnails right",
@@ -243,7 +245,7 @@ fun GalleryLightbox(
                                     )
                                 }
                             ) {
-                                SpanText("→")
+                                Span(attrs = { style { property("transform", "translateY(-2px)"); property("display", "inline-block") } }) { Text("→") }
                             }
                         }
                     }
