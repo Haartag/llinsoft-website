@@ -27,7 +27,7 @@
       "playStore": "https://play.google.com/store/apps/details?id=com.valerytimofeev.composedstorage"
     },
     "date": "2024-01",
-    "order": 1
+    "order": 66
   },
   {
     "id": "heroes-helper",
@@ -86,7 +86,7 @@
       "github": "https://github.com/Haartag/GPTMobile"
     },
     "date": "2023-08",
-    "order": 3
+    "order": 5
   },
   {
     "id": "http-requester",
@@ -114,7 +114,7 @@
     ],
     "links": {},
     "date": "2023-06",
-    "order": 4
+    "order": 25
   },
   {
     "id": "server-alerts",
@@ -141,7 +141,7 @@
     ],
     "links": {},
     "date": "2023-05",
-    "order": 5
+    "order": 7
   },
   {
     "id": "ebay-orders",
@@ -194,7 +194,7 @@
     ],
     "links": {},
     "date": "2023-03",
-    "order": 7
+    "order": 5
   },
   {
     "id": "pronunciation-learning",
@@ -221,7 +221,52 @@
     ],
     "links": {},
     "date": "2023-02",
-    "order": 8
+    "order": 12
+  },
+  {
+    "id": "oborot-learn-serbian",
+    "slug": "oborot-learn-serbian",
+    "title": "Oborot — Learn Serbian",
+    "shortDescription": "Full-stack KMM language app — adaptive Serbian flashcards, TTS audio, and offline support.",
+    "fullDescription": "Oborot is a full-stack Kotlin Multiplatform project — an Android app, an iOS app, and a Ktor backend server — built to help Russian speakers learn Serbian through adaptive vocabulary flashcards, audio-enhanced dialogues, and smart progress tracking. The mobile client delivers 3D flip cards with native Azure and Gemini TTS audio and a chat-style dialogue reader, while the backend drives adaptive word selection weighted by individual knowledge levels. Progress is visualized through an activity heatmap and day-streak tracker, and everything works offline with a cache backed by Room and local sound storage.",
+    "techStack": [
+      "Kotlin Multiplatform",
+      "Compose Multiplatform",
+      "Material3",
+      "Ktor Client",
+      "Room",
+      "DataStore",
+      "ExoPlayer",
+      "Koin",
+      "Clean Architecture + MVI",
+      "Ktor",
+      "PostgreSQL",
+      "Exposed ORM",
+      "Azure TTS",
+      "Docker",
+      "Caddy",
+      "JWT + BCrypt"
+    ],
+    "featuredTech": ["Ktor", "ExoPlayer", "PostgreSQL"],
+    "features": [
+      "Adaptive flashcard engine — word selection weighted by individual knowledge level",
+      "Native TTS audio via Azure and Gemini (Serbian voice) for all vocabulary and dialogue lines",
+      "Chat-style dialogue reader with per-line audio playback and completion tracking",
+      "Full offline support — cache with Room database and local voices storage",
+      "Progress dashboard with day streak, activity heatmap, and session time",
+      "Secure JWT authentication with access and refresh token flow"
+    ],
+    "thumbnailUrl": "/images/projects/lang-thumb.png",
+    "heroImageUrl": "/images/projects/lang-hero.png",
+    "galleryImages": [
+      "/images/projects/lang-screen1.png",
+      "/images/projects/lang-screen2.png",
+      "/images/projects/lang-screen3.png",
+      "/images/projects/lang-screen4.png"
+    ],
+    "links": {},
+    "date": "2025-11",
+    "order": 1
   },
   {
     "id": "portfolio-website-kobweb",
@@ -250,6 +295,6 @@
       "github": "https://github.com/Haartag/llinsoft-website"
     },
     "date": "2025-04",
-    "order": 9
+    "order": 99
   }
 ]
