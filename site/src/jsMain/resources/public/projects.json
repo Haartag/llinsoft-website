@@ -55,12 +55,11 @@
     "featuredTech": ["Kotlin Multiplatform", "WebRTC", "WebSocket"],
     "features": [
       "Admin-only user creation — no public registration endpoint",
-      "Pairing code system — contacts added via ephemeral 6-digit codes, no username exposure",
+      "Pairing code system — contacts added via ephemeral codes, no username exposure",
       "Peer-to-peer voice calls via WebRTC with DTLS-SRTP media encryption",
       "Push notifications for incoming calls when app is closed (FCM full-screen intent)",
       "Call history with incoming, outgoing, and missed call tracking",
-      "JWT authentication with access and refresh token flow",
-      "Role-based access control (admin vs. regular user)"
+      "JWT authentication with access and refresh token flow"
     ],
     "thumbnailUrl": "/images/projects/lightless-thumb.png",
     "heroImageUrl": "/images/projects/lightless-hero.png",
