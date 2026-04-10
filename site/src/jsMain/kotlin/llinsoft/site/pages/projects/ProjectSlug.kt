@@ -207,10 +207,6 @@ fun ProjectSlugPage() {
                     GalleryRail(
                         images = current.galleryImages,
                         projectTitle = current.title,
-                        galleryState = state.galleryState,
-                        onGalleryStateChange = { newState ->
-                            state.galleryState = newState
-                        },
                         onThumbnailClick = { index ->
                             state.galleryState = state.galleryState
                                 .withSelectedIndex(index)
