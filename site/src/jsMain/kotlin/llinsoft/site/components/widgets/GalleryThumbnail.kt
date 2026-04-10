@@ -58,7 +58,7 @@ fun GalleryThumbnail(
     alt: String,
     ariaLabel: String,
     width: String = "7.3rem",
-    height: String = "12.8rem",
+    height: String? = null,
     borderRadius: String = "0.62rem",
     borderRadiusPx: Int = 10,
     estimatedWidthPx: Int = 117,
@@ -67,6 +67,8 @@ fun GalleryThumbnail(
     onClick: () -> Unit
 ) {
     var hovered by remember(imageUrl) { mutableStateOf(false) }
+    var imageDims by remember(imageUrl) { mutableStateOf<Pair<Int, Int>?>(null) }
+    val (svgW, svgH) = imageDims ?: (estimatedWidthPx to estimatedHeightPx)
 
     val glowFilter = when {
         hovered -> "drop-shadow(0 0 12px rgba(90, 170, 255, 0.38))"
@@ -74,8 +76,8 @@ fun GalleryThumbnail(
         else -> "none"
     }
 
-    val overlayBg = remember(hovered, isSelected, borderRadiusPx, estimatedWidthPx, estimatedHeightPx) {
-        overlayBackground(hovered, isSelected, borderRadiusPx, estimatedWidthPx, estimatedHeightPx)
+    val overlayBg = remember(hovered, isSelected, borderRadiusPx, svgW, svgH) {
+        overlayBackground(hovered, isSelected, borderRadiusPx, svgW, svgH)
     }
 
     Div(
@@ -98,7 +100,7 @@ fun GalleryThumbnail(
                 style {
                     property("width", width)
                     property("min-width", width)
-                    property("height", height)
+                    if (height != null) property("height", height)
                     property("border-radius", borderRadius)
                     property("overflow", "hidden")
                     property("background", "#121b2f")
@@ -120,9 +122,18 @@ fun GalleryThumbnail(
                 attrs = {
                     style {
                         property("width", "100%")
-                        property("height", "100%")
+                        property("height", if (height != null) "100%" else "auto")
                         property("display", "block")
-                        property("object-fit", "cover")
+                        if (height != null) property("object-fit", "cover")
+                    }
+                    addEventListener("load") { event ->
+                        val img = event.target.asDynamic()
+                        val nw = img.naturalWidth as? Int ?: 0
+                        val nh = img.naturalHeight as? Int ?: 0
+                        if (nw > 0 && nh > 0) {
+                            val renderedH = (estimatedWidthPx * nh.toDouble() / nw.toDouble()).toInt()
+                            imageDims = estimatedWidthPx to renderedH
+                        }
                     }
                 }
             )

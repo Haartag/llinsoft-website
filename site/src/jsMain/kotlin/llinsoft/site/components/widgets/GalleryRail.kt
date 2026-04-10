@@ -48,11 +48,9 @@ fun GalleryRail(
                     alt = "$projectTitle gallery preview ${index + 1}",
                     ariaLabel = "Open screenshot ${index + 1}",
                     width = "7.3rem",
-                    height = "12.8rem",
                     borderRadius = "0.62rem",
                     borderRadiusPx = 10,
                     estimatedWidthPx = 117,
-                    estimatedHeightPx = 205,
                     isSelected = false,
                     onClick = { onThumbnailClick(index) }
                 )

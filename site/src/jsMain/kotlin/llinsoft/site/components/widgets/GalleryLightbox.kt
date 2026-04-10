@@ -39,7 +39,7 @@ val GalleryLightboxPanelStyle = CssStyle {
         Modifier
             .fillMaxWidth()
             .maxWidth(55.cssRem)
-            .padding(0.95.cssRem)
+            .padding(1.2.cssRem)
             .borderRadius(1.cssRem)
             .backgroundColor(colorMode.toSitePalette().elevatedSurface)
             .border(width = 1.px, color = colorMode.toSitePalette().border)
@@ -55,7 +55,7 @@ val GalleryLightboxStageShellStyle = CssStyle {
         Modifier
             .fillMaxWidth()
             .height(66.vh)
-            .maxWidth(45.cssRem)
+            .maxWidth(50.cssRem)
             .padding(leftRight = 0.2.cssRem)
     }
     Breakpoint.MD {
@@ -66,9 +66,7 @@ val GalleryLightboxStageShellStyle = CssStyle {
 val GalleryLightboxImageStageStyle = CssStyle.base {
     Modifier
         .fillMaxSize()
-        .backgroundColor(colorMode.toSitePalette().surface)
         .borderRadius(0.7.cssRem)
-        .border(width = 1.px, color = colorMode.toSitePalette().border)
         .overflow(com.varabyte.kobweb.compose.css.Overflow.Hidden)
 }
 
@@ -105,7 +103,7 @@ fun GalleryLightbox(
         Div(
             attrs = {
                 onClick { it.stopPropagation() }
-                attr("style", "display: inline-block")
+                attr("style", "display: inline-block; width: min(88vw, 38rem)")
             }
         ) {
             Column(GalleryLightboxPanelStyle.toModifier().gap(0.85.cssRem)) {
@@ -199,11 +197,9 @@ fun GalleryLightbox(
                                     alt = "$projectTitle screenshot thumbnail ${imageIndex + 1}",
                                     ariaLabel = "Select screenshot ${imageIndex + 1}",
                                     width = "3.2rem",
-                                    height = "5.7rem",
                                     borderRadius = "0.5rem",
                                     borderRadiusPx = 8,
                                     estimatedWidthPx = 51,
-                                    estimatedHeightPx = 91,
                                     isSelected = imageIndex == safeGalleryIndex,
                                     onClick = {
                                         onGalleryStateChange(galleryState.withSelectedIndex(imageIndex))
