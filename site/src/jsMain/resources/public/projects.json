@@ -75,6 +75,49 @@
     "order": 2
   },
   {
+    "id": "car-demo",
+    "slug": "car-demo",
+    "title": "CarDemo",
+    "shortDescription": "Android companion app for real-time control of prototype car electronics over MQTT.",
+    "fullDescription": "CarDemo is a native Android companion app built for a prototype vehicle, letting authorized users control car lights, seats, sound, and run pre-programmed scenes over MQTT. Users register and log in using face recognition — photos are captured with CameraX, uploaded via SFTP, and matched against the registered user list fetched live from the car. The app supports Owner and Guest roles with distinct permission levels, and falls back to a restricted offline mode when the MQTT broker is unreachable, using a local Room cache for user data.",
+    "techStack": [
+      "Kotlin",
+      "Jetpack Compose",
+      "Material3",
+      "MVVM + Clean Architecture",
+      "MQTT",
+      "SFTP",
+      "CameraX",
+      "Hilt",
+      "Room",
+      "DataStore Preferences",
+      "Kotlinx Serialization",
+      "Coil",
+      "Coroutines + StateFlow"
+    ],
+    "featuredTech": ["MQTT", "CameraX", "Jetpack Compose"],
+    "features": [
+      "Face-recognition registration — photo captured with CameraX, uploaded via SFTP, confirmed over MQTT",
+      "Face-recognition login — user list fetched live from the car; falls back to local cache on timeout",
+      "Owner / Guest roles with active and restricted session modes",
+      "Lights Control — individual toggles for High Beam, Low Beam, DRL, Position, Stop, and Hazard lights",
+      "Scenes — create, modify, play, and delete named scene presets stored on the car",
+      "Diagnostics — live car telemetry streamed over MQTT subscriptions",
+      "Offline-tolerant — Room database caches users; app degrades gracefully when car is unreachable"
+    ],
+    "thumbnailUrl": "/images/projects/cardemo-thumb.png",
+    "heroImageUrl": "/images/projects/cardemo-hero.png",
+    "galleryImages": [
+      "/images/projects/cardemo-screen1.png",
+      "/images/projects/cardemo-screen2.png",
+      "/images/projects/cardemo-screen3.png",
+      "/images/projects/cardemo-screen4.png"
+    ],
+    "links": {},
+    "date": "2024-01",
+    "order": 4
+  },
+  {
     "id": "heroes-helper",
     "slug": "heroes-helper-h3",
     "title": "Heroes Helper",
@@ -239,7 +282,7 @@
     ],
     "links": {},
     "date": "2023-03",
-    "order": 5
+    "order": 9
   },
   {
     "id": "pronunciation-learning",
