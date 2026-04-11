@@ -102,8 +102,7 @@
       "Owner / Guest roles with active and restricted session modes",
       "Lights Control — individual toggles for High Beam, Low Beam, DRL, Position, Stop, and Hazard lights",
       "Scenes — create, modify, play, and delete named scene presets stored on the car",
-      "Diagnostics — live car telemetry streamed over MQTT subscriptions",
-      "Offline-tolerant — Room database caches users; app degrades gracefully when car is unreachable"
+      "Diagnostics — live car telemetry streamed over MQTT subscriptions"
     ],
     "thumbnailUrl": "/images/projects/cardemo-thumb.png",
     "heroImageUrl": "/images/projects/cardemo-hero.png",
