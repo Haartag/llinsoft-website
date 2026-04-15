@@ -66,6 +66,9 @@ jobs:
           cd site
           ../kobweb-${{ env.KOBWEB_CLI_VERSION }}/bin/kobweb export --notty --layout static
 
+      - name: Add SPA routing fallback for GitHub Pages
+        run: cp ./site/.kobweb/site/index.html ./site/.kobweb/site/404.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
