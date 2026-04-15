@@ -15,7 +15,8 @@ server:
 
 export:
   routes:
-    - /projects/zakroma-storage-app
+    - /projects/lightless
+    - /projects/car-demo
     - /projects/heroes-helper-h3
     - /projects/openai-chat-app
     - /projects/http-requester-pro
@@ -23,4 +24,5 @@ export:
     - /projects/ebay-order-management
     - /projects/property-management-solution
     - /projects/language-pronunciation-app
-    - /projects/portfolio-compose-web
+    - /projects/oborot-learn-serbian
+    - /projects/portfolio-kobweb
