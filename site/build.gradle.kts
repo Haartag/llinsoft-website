@@ -1,6 +1,6 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
 import kotlinx.html.link
-import kotlinx.html.script
+import kotlinx.html.style
 import kotlinx.html.unsafe
 
 plugins {
@@ -20,11 +20,11 @@ kobweb {
             description.set("Powered by Kobweb")
 
             head.add {
-                // Restore path saved by 404.html SPA redirect so the router sees the correct
-                // URL before Kobweb's JS bundle initialises (runs synchronously in <head>).
-                script {
+                // Hide page until Kobweb's router has settled on the correct route,
+                // preventing a flash of the homepage during SPA initialization.
+                style {
                     unsafe {
-                        raw("(function(){var r=sessionStorage.getItem('spa-redirect');if(r){sessionStorage.removeItem('spa-redirect');history.replaceState(null,'',r);}})();")
+                        raw("html{background:#0F172A;}html:not(.app-ready){opacity:0;}html.app-ready{opacity:1;transition:opacity 0.15s ease;}")
                     }
                 }
                 link(rel = "preconnect", href = "https://fonts.googleapis.com")

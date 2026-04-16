@@ -64,12 +64,6 @@ jobs:
           cd site
           ../kobweb-${{ env.KOBWEB_CLI_VERSION }}/bin/kobweb export --notty --layout static
 
-      - name: Add SPA routing fallback for GitHub Pages
-        run: |
-          cat > ./site/.kobweb/site/404.html << 'EOF'
-          <!DOCTYPE html><html><head><meta charset="utf-8"><script>sessionStorage.setItem('spa-redirect',location.pathname);location.replace('/');</script></head><body></body></html>
-          EOF
-
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
