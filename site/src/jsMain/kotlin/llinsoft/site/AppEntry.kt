@@ -18,8 +18,6 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobweb.silk.theme.colors.loadFromLocalStorage
 import com.varabyte.kobweb.silk.theme.colors.saveToLocalStorage
 import com.varabyte.kobweb.silk.theme.colors.systemPreference
-import kotlinx.browser.document
-import kotlinx.coroutines.delay
 import org.jetbrains.compose.web.css.vh
 
 private const val COLOR_MODE_KEY = "site:colorMode"
@@ -44,13 +42,6 @@ fun AppEntry(content: @Composable () -> Unit) {
         val colorMode = ColorMode.current
         LaunchedEffect(colorMode) {
             colorMode.saveToLocalStorage(COLOR_MODE_KEY)
-        }
-        LaunchedEffect(Unit) {
-            // Kobweb's router navigates asynchronously via its own LaunchedEffect.
-            // Yielding here lets that coroutine run first, so app-ready is added
-            // only after the router has settled on the correct page — not the homepage.
-            delay(50)
-            document.documentElement?.classList?.add("app-ready")
         }
         Surface(SmoothColorStyle.toModifier().minHeight(100.vh)) {
             content()
