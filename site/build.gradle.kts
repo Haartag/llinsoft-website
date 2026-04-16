@@ -1,8 +1,5 @@
 import com.varabyte.kobweb.gradle.application.util.configAsKobwebApplication
 import kotlinx.html.link
-import kotlinx.html.script
-import kotlinx.html.style
-import kotlinx.html.unsafe
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -34,20 +31,6 @@ kobweb {
             description.set("Powered by Kobweb")
 
             head.add {
-                // The static exporter bakes app-ready into the HTML class attribute.
-                // Strip it immediately so the CSS opacity rule actually hides the page.
-                script {
-                    unsafe {
-                        raw("document.documentElement.classList.remove('app-ready');")
-                    }
-                }
-                // Hide page until Kobweb's router has settled on the correct route,
-                // preventing a flash of the homepage during SPA initialization.
-                style {
-                    unsafe {
-                        raw("html{background:#0F172A;}html:not(.app-ready){opacity:0;}html.app-ready{opacity:1;transition:opacity 0.15s ease;}")
-                    }
-                }
                 link(rel = "preconnect", href = "https://fonts.googleapis.com")
                 link(rel = "preconnect", href = "https://fonts.gstatic.com") {
                     attributes["crossorigin"] = ""
