@@ -1,35 +1,5 @@
 [
   {
-    "id": "zakroma-storage",
-    "slug": "zakroma-storage-app",
-    "title": "3akroma",
-    "shortDescription": "Simple app to manage storage of something. Or maybe even everything.",
-    "fullDescription": "3akroma is a simple and easy to learn and manage app to track and store anything - groceries, supplies, tools, and anything else you can think of! Built with modern Android technologies and clean architecture principles, it provides an intuitive interface for organizing and tracking your inventory with ease.",
-    "techStack": ["Kotlin", "Jetpack Compose", "Clean Architecture", "Kotlin Coroutines", "Room", "Hilt", "Coil", "JUnit"],
-    "featuredTech": ["Room", "Coil", "JUnit"],
-    "features": [
-      "Track and organize any type of items",
-      "Offline-first data persistence with Room",
-      "Clean and intuitive Material Design interface",
-      "Image support for visual item identification",
-      "Category-based organization"
-    ],
-    "thumbnailUrl": "/images/projects/food-thumb.png",
-    "heroImageUrl": "/images/projects/food-hero.png",
-    "galleryImages": [
-      "/images/projects/food-screen1.png",
-      "/images/projects/food-screen2.png",
-      "/images/projects/food-screen3.png",
-      "/images/projects/food-screen4.png"
-    ],
-    "links": {
-      "github": "https://github.com/Haartag/ComposedStorage",
-      "playStore": "https://play.google.com/store/apps/details?id=com.valerytimofeev.composedstorage"
-    },
-    "date": "2024-01",
-    "order": 66
-  },
-  {
     "id": "lightless",
     "slug": "lightless",
     "title": "Lightless",
@@ -61,14 +31,14 @@
       "Call history with incoming, outgoing, and missed call tracking",
       "JWT authentication with access and refresh token flow"
     ],
-    "thumbnailUrl": "/images/projects/lightless-thumb.png",
-    "heroImageUrl": "/images/projects/lightless-hero.png",
+    "thumbnailUrl": "/images/projects/lightless-thumb.webp",
+    "heroImageUrl": "/images/projects/lightless-hero.webp",
     "galleryImages": [
-      "/images/projects/lightless-screen1.png",
-      "/images/projects/lightless-screen2.png",
-      "/images/projects/lightless-screen3.png",
-      "/images/projects/lightless-screen4.png",
-      "/images/projects/lightless-screen5.png"
+      "/images/projects/lightless-screen1.webp",
+      "/images/projects/lightless-screen2.webp",
+      "/images/projects/lightless-screen3.webp",
+      "/images/projects/lightless-screen4.webp",
+      "/images/projects/lightless-screen5.webp"
     ],
     "links": {},
     "date": "2025-11",
@@ -104,13 +74,13 @@
       "Scenes — create, modify, play, and delete named scene presets stored on the car",
       "Diagnostics — live car telemetry streamed over MQTT subscriptions"
     ],
-    "thumbnailUrl": "/images/projects/cardemo-thumb.png",
-    "heroImageUrl": "/images/projects/cardemo-hero.png",
+    "thumbnailUrl": "/images/projects/cardemo-thumb.webp",
+    "heroImageUrl": "/images/projects/cardemo-hero.webp",
     "galleryImages": [
-      "/images/projects/cardemo-screen1.png",
-      "/images/projects/cardemo-screen2.png",
-      "/images/projects/cardemo-screen3.png",
-      "/images/projects/cardemo-screen4.png"
+      "/images/projects/cardemo-screen1.webp",
+      "/images/projects/cardemo-screen2.webp",
+      "/images/projects/cardemo-screen3.webp",
+      "/images/projects/cardemo-screen4.webp"
     ],
     "links": {},
     "date": "2024-01",
@@ -131,13 +101,13 @@
       "Offline calculation engine",
       "Clean Material Design interface"
     ],
-    "thumbnailUrl": "/images/projects/heroes-thumb.png",
-    "heroImageUrl": "/images/projects/heroes-hero.png",
+    "thumbnailUrl": "/images/projects/heroes-thumb.webp",
+    "heroImageUrl": "/images/projects/heroes-hero.webp",
     "galleryImages": [
-      "/images/projects/heroes-screen1.png",
-      "/images/projects/heroes-screen2.png",
-      "/images/projects/heroes-screen3.png",
-      "/images/projects/heroes-screen4.png"
+      "/images/projects/heroes-screen1.webp",
+      "/images/projects/heroes-screen2.webp",
+      "/images/projects/heroes-screen3.webp",
+      "/images/projects/heroes-screen4.webp"
     ],
     "links": {
       "github": "https://github.com/Haartag/H3Pand",
@@ -161,19 +131,19 @@
       "Local storage with SqlDelight",
       "Organized conversation history"
     ],
-    "thumbnailUrl": "/images/projects/chat-thumb.png",
-    "heroImageUrl": "/images/projects/chat-hero.png",
+    "thumbnailUrl": "/images/projects/chat-thumb.webp",
+    "heroImageUrl": "/images/projects/chat-hero.webp",
     "galleryImages": [
-      "/images/projects/chat-screen1.png",
-      "/images/projects/chat-screen2.png",
-      "/images/projects/chat-screen3.png",
-      "/images/projects/chat-screen4.png"
+      "/images/projects/chat-screen1.webp",
+      "/images/projects/chat-screen2.webp",
+      "/images/projects/chat-screen3.webp",
+      "/images/projects/chat-screen4.webp"
     ],
     "links": {
       "github": "https://github.com/Haartag/GPTMobile"
     },
     "date": "2023-08",
-    "order": 5
+    "order": 10
   },
   {
     "id": "http-requester",
@@ -191,13 +161,13 @@
       "Comprehensive logging system",
       "Favorites and request history"
     ],
-    "thumbnailUrl": "/images/projects/http-thumb.png",
-    "heroImageUrl": "/images/projects/http-hero.png",
+    "thumbnailUrl": "/images/projects/http-thumb.webp",
+    "heroImageUrl": "/images/projects/http-hero.webp",
     "galleryImages": [
-      "/images/projects/http-screen1.png",
-      "/images/projects/http-screen2.png",
-      "/images/projects/http-screen3.png",
-      "/images/projects/http-screen4.png"
+      "/images/projects/http-screen1.webp",
+      "/images/projects/http-screen2.webp",
+      "/images/projects/http-screen3.webp",
+      "/images/projects/http-screen4.webp"
     ],
     "links": {},
     "date": "2023-06",
@@ -218,13 +188,13 @@
       "Custom notification sounds per alert group",
       "Persistent notifications when app is closed"
     ],
-    "thumbnailUrl": "/images/projects/alerts-thumb.png",
-    "heroImageUrl": "/images/projects/alerts-hero.png",
+    "thumbnailUrl": "/images/projects/alerts-thumb.webp",
+    "heroImageUrl": "/images/projects/alerts-hero.webp",
     "galleryImages": [
-      "/images/projects/alerts-screen1.png",
-      "/images/projects/alerts-screen2.png",
-      "/images/projects/alerts-screen3.png",
-      "/images/projects/alerts-screen4.png"
+      "/images/projects/alerts-screen1.webp",
+      "/images/projects/alerts-screen2.webp",
+      "/images/projects/alerts-screen3.webp",
+      "/images/projects/alerts-screen4.webp"
     ],
     "links": {},
     "date": "2023-05",
@@ -245,12 +215,12 @@
       "Automated delivery status updates",
       "Custom timeframe order filtering"
     ],
-    "thumbnailUrl": "/images/projects/ebay-thumb.png",
-    "heroImageUrl": "/images/projects/ebay-hero.png",
+    "thumbnailUrl": "/images/projects/ebay-thumb.webp",
+    "heroImageUrl": "/images/projects/ebay-hero.webp",
     "galleryImages": [
-      "/images/projects/ebay-screen1.png",
-      "/images/projects/ebay-screen2.png",
-      "/images/projects/ebay-screen3.png"
+      "/images/projects/ebay-screen1.webp",
+      "/images/projects/ebay-screen2.webp",
+      "/images/projects/ebay-screen3.webp"
     ],
     "links": {},
     "date": "2023-04",
@@ -271,17 +241,17 @@
       "Admin and owner role separation",
       "Debt tracking and alerts"
     ],
-    "thumbnailUrl": "/images/projects/property-thumb.png",
-    "heroImageUrl": "/images/projects/property-hero.png",
+    "thumbnailUrl": "/images/projects/property-thumb.webp",
+    "heroImageUrl": "/images/projects/property-hero.webp",
     "galleryImages": [
-      "/images/projects/property-screen1.png",
-      "/images/projects/property-screen2.png",
-      "/images/projects/property-screen3.png",
-      "/images/projects/property-screen4.png"
+      "/images/projects/property-screen1.webp",
+      "/images/projects/property-screen2.webp",
+      "/images/projects/property-screen3.webp",
+      "/images/projects/property-screen4.webp"
     ],
     "links": {},
     "date": "2023-03",
-    "order": 9
+    "order": 15
   },
   {
     "id": "pronunciation-learning",
@@ -298,13 +268,13 @@
       "Progress tracking for learners",
       "Sequence playback functionality"
     ],
-    "thumbnailUrl": "/images/projects/language-thumb.png",
-    "heroImageUrl": "/images/projects/language-hero.png",
+    "thumbnailUrl": "/images/projects/language-thumb.webp",
+    "heroImageUrl": "/images/projects/language-hero.webp",
     "galleryImages": [
-      "/images/projects/language-screen1.png",
-      "/images/projects/language-screen2.png",
-      "/images/projects/language-screen3.png",
-      "/images/projects/language-screen4.png"
+      "/images/projects/language-screen1.webp",
+      "/images/projects/language-screen2.webp",
+      "/images/projects/language-screen3.webp",
+      "/images/projects/language-screen4.webp"
     ],
     "links": {},
     "date": "2023-02",
@@ -343,13 +313,13 @@
       "Progress dashboard with day streak, activity heatmap, and session time",
       "Secure JWT authentication with access and refresh token flow"
     ],
-    "thumbnailUrl": "/images/projects/lang-thumb.png",
-    "heroImageUrl": "/images/projects/lang-hero.png",
+    "thumbnailUrl": "/images/projects/lang-thumb.webp",
+    "heroImageUrl": "/images/projects/lang-hero.webp",
     "galleryImages": [
-      "/images/projects/lang-screen1.png",
-      "/images/projects/lang-screen2.png",
-      "/images/projects/lang-screen3.png",
-      "/images/projects/lang-screen4.png"
+      "/images/projects/lang-screen1.webp",
+      "/images/projects/lang-screen2.webp",
+      "/images/projects/lang-screen3.webp",
+      "/images/projects/lang-screen4.webp"
     ],
     "links": {},
     "date": "2025-11",
@@ -371,12 +341,12 @@
       "Lightbox gallery on project detail pages",
       "Fully responsive layout for mobile and desktop"
     ],
-    "thumbnailUrl": "/images/projects/web-thumb.png",
-    "heroImageUrl": "/images/projects/web-hero.png",
+    "thumbnailUrl": "/images/projects/web-thumb.webp",
+    "heroImageUrl": "/images/projects/web-hero.webp",
     "galleryImages": [
-      "/images/projects/portfolio-screen1.png",
-      "/images/projects/portfolio-screen2.png",
-      "/images/projects/portfolio-screen3.png"
+      "/images/projects/portfolio-screen1.webp",
+      "/images/projects/portfolio-screen2.webp",
+      "/images/projects/portfolio-screen3.webp"
     ],
     "links": {
       "github": "https://github.com/Haartag/llinsoft-website"
