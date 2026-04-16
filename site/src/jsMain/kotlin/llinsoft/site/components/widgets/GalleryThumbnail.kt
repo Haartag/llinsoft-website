@@ -120,6 +120,7 @@ fun GalleryThumbnail(
                 src = imageUrl,
                 alt = alt,
                 attrs = {
+                    attr("loading", "lazy")
                     style {
                         property("width", "100%")
                         property("height", if (height != null) "100%" else "auto")
