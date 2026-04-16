@@ -17,6 +17,19 @@ version = "1.0-SNAPSHOT"
 
 kobweb {
     app {
+        export {
+            addExtraRoute("/projects/lightless")
+            addExtraRoute("/projects/car-demo")
+            addExtraRoute("/projects/heroes-helper-h3")
+            addExtraRoute("/projects/openai-chat-app")
+            addExtraRoute("/projects/http-requester-pro")
+            addExtraRoute("/projects/server-monitoring-alerts")
+            addExtraRoute("/projects/ebay-order-management")
+            addExtraRoute("/projects/property-management-solution")
+            addExtraRoute("/projects/language-pronunciation-app")
+            addExtraRoute("/projects/oborot-learn-serbian")
+            addExtraRoute("/projects/portfolio-kobweb")
+        }
         index {
             description.set("Powered by Kobweb")
 
