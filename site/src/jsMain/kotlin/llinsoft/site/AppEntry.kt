@@ -45,8 +45,7 @@ fun AppEntry(content: @Composable () -> Unit) {
             colorMode.saveToLocalStorage(COLOR_MODE_KEY)
         }
         LaunchedEffect(Unit) {
-            // Reveal the page once the router has resolved the correct route,
-            // preventing a flash of the homepage during SPA initialization.
+            // Reveal page after router has resolved the correct route.
             document.documentElement?.classList?.add("app-ready")
         }
         Surface(SmoothColorStyle.toModifier().minHeight(100.vh)) {
