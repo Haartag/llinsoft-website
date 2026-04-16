@@ -1,18 +1,16 @@
 package llinsoft.site.components.widgets
 
 import androidx.compose.runtime.Composable
-import com.varabyte.kobweb.compose.css.ObjectFit
 import com.varabyte.kobweb.compose.ui.Modifier
 import com.varabyte.kobweb.compose.ui.modifiers.*
 import com.varabyte.kobweb.compose.ui.toAttrs
-import com.varabyte.kobweb.silk.components.graphics.Image
 import com.varabyte.kobweb.silk.components.text.SpanText
 import com.varabyte.kobweb.silk.style.CssStyle
 import com.varabyte.kobweb.silk.style.base
 import com.varabyte.kobweb.silk.style.toAttrs
-import org.jetbrains.compose.web.css.DisplayStyle
 import org.jetbrains.compose.web.css.cssRem
 import org.jetbrains.compose.web.dom.Div
+import org.jetbrains.compose.web.dom.Img
 
 /**
  * Style for project hero title
@@ -40,15 +38,19 @@ fun ProjectHero(
     heroImageUrl: String
 ) {
     ProjectSection {
-        Image(
+        Img(
             src = heroImageUrl,
-            description = "$title hero image",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(20.cssRem)
-                .objectFit(ObjectFit.Cover)
-                .borderRadius(1.cssRem)
-                .display(DisplayStyle.Block)
+            alt = "$title hero image",
+            attrs = {
+                attr("fetchpriority", "high")
+                style {
+                    property("width", "100%")
+                    property("height", "20rem")
+                    property("object-fit", "cover")
+                    property("border-radius", "1rem")
+                    property("display", "block")
+                }
+            }
         )
 
         Div(Modifier.margin(top = 1.cssRem).toAttrs()) {
