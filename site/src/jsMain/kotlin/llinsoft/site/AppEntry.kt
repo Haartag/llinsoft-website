@@ -18,6 +18,7 @@ import com.varabyte.kobweb.silk.theme.colors.ColorMode
 import com.varabyte.kobweb.silk.theme.colors.loadFromLocalStorage
 import com.varabyte.kobweb.silk.theme.colors.saveToLocalStorage
 import com.varabyte.kobweb.silk.theme.colors.systemPreference
+import kotlinx.browser.document
 import org.jetbrains.compose.web.css.vh
 
 private const val COLOR_MODE_KEY = "site:colorMode"
@@ -42,6 +43,11 @@ fun AppEntry(content: @Composable () -> Unit) {
         val colorMode = ColorMode.current
         LaunchedEffect(colorMode) {
             colorMode.saveToLocalStorage(COLOR_MODE_KEY)
+        }
+        LaunchedEffect(Unit) {
+            // Reveal the page once the router has resolved the correct route,
+            // preventing a flash of the homepage during SPA initialization.
+            document.documentElement?.classList?.add("app-ready")
         }
         Surface(SmoothColorStyle.toModifier().minHeight(100.vh)) {
             content()
