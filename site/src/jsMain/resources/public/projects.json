@@ -313,13 +313,15 @@
       "Progress dashboard with day streak, activity heatmap, and session time",
       "Secure JWT authentication with access and refresh token flow"
     ],
-    "thumbnailUrl": "/images/projects/lang-thumb.webp",
+    "thumbnailUrl": "/images/projects/oborot-thumb.webp",
     "heroImageUrl": "/images/projects/lang-hero.webp",
     "galleryImages": [
-      "/images/projects/lang-screen1.webp",
-      "/images/projects/lang-screen2.webp",
-      "/images/projects/lang-screen3.webp",
-      "/images/projects/lang-screen4.webp"
+      "/images/projects/oborot-screen1.webp",
+      "/images/projects/oborot-screen2.webp",
+      "/images/projects/oborot-screen3.webp",
+      "/images/projects/oborot-screen4.webp",
+      "/images/projects/oborot-screen5.webp",
+      "/images/projects/oborot-screen6.webp"
     ],
     "links": {},
     "date": "2025-11",
